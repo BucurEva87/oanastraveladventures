@@ -35,6 +35,7 @@ CREATE TABLE `User` (
     `email` VARCHAR(191) NOT NULL,
     `emailVerified` DATETIME(3) NULL,
     `image` VARCHAR(191) NULL,
+    `password` VARCHAR(191) NULL,
     `role` ENUM('ADMIN', 'MODERATOR', 'USER') NOT NULL DEFAULT 'USER',
 
     UNIQUE INDEX `User_email_key`(`email`),

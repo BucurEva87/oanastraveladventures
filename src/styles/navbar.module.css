@@ -1,0 +1,38 @@
+.dropdownmenuContent {
+  color: black;
+  background-color: white;
+  padding: 0.8rem;
+  position: relative;
+  top: 1rem;
+
+  > div:first-child {
+    color: gray;
+    font-style: italic;
+  }
+
+  div[role="menuitem"]:hover {
+    all: unset;
+    cursor: pointer;
+  }
+}
+
+.avatar {
+  position: relative;
+  top: 8px;
+  color: black;
+  margin-left: auto;
+  cursor: pointer;
+
+  span {
+    background-color: skyblue;
+  }
+}
+
+.accountArea {
+  margin-left: auto;
+  gap: 1rem;
+}
+
+.signInButton {
+  margin-top: 4px;
+}

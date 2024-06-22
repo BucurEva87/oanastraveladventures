@@ -1,0 +1,101 @@
+"use client"
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu"
+import { signIn, signOut, useSession } from "next-auth/react"
+import styles from "@/styles/navbar.module.css"
+import { cn } from "@/lib/utils"
+import Link from "next/link"
+import { LogIn, UserPlus } from "lucide-react"
+
+const Authentication = () => {
+  const { data: session } = useSession()
+
+  return (
+    <>
+      {session ? (
+        <Dropdown user={session.user} />
+      ) : (
+        <ul
+          className={cn(
+            "flex justify-center items-center outline-1 outline-slate-50",
+            styles.accountArea
+          )}
+        >
+          <li>
+            <Link
+              href="/register"
+              title="Create a new account"
+            >
+              <UserPlus />
+            </Link>
+          </li>
+          <li>
+            <button
+              type="button"
+              title="Sign in with an existing account"
+              onClick={() => signIn()}
+              className={styles.signInButton}
+            >
+              <LogIn />
+            </button>
+          </li>
+        </ul>
+      )}
+    </>
+  )
+}
+
+const Dropdown = ({
+  user,
+}: {
+  user?: {
+    name?: string | null
+    image?: string | null
+    email?: string | null
+  }
+}) => {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Avatar className={styles.avatar}>
+          <AvatarImage
+            src={user?.image || undefined}
+            alt={`${user?.name}'s profile image`}
+          />
+          <AvatarFallback>
+            {user?.name
+              ?.split(" ")
+              .reduce((acc, val) => acc + val.substring(0, 1), "")
+              .toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className={styles.dropdownmenuContent}>
+        <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Profile</DropdownMenuItem>
+        <DropdownMenuItem>Billing</DropdownMenuItem>
+        <DropdownMenuItem>Settings</DropdownMenuItem>
+        <DropdownMenuItem>Keyboard shortcuts</DropdownMenuItem>
+        <DropdownMenuItem>
+          <button
+            type="button"
+            onClick={() => signOut()}
+          >
+            Sign Out
+          </button>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+export default Authentication
