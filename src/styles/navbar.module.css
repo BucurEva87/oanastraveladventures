@@ -4,16 +4,14 @@
   padding: 0.8rem;
   position: relative;
   top: 1rem;
-
-  div[role="menuitem"]:hover {
-    all: unset;
-    cursor: pointer;
-  }
 }
-
 .dropdownmenuContent > div:first-child {
   color: gray;
   font-style: italic;
+}
+.dropdownmenuContent div[role="menuitem"]:hover {
+  all: unset;
+  cursor: pointer;
 }
 
 .avatar {
@@ -22,10 +20,9 @@
   color: black;
   margin-left: auto;
   cursor: pointer;
-
-  span {
-    background-color: skyblue;
-  }
+}
+.avatar span {
+  background-color: skyblue;
 }
 
 .accountArea {
