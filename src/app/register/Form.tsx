@@ -134,9 +134,10 @@ const RegisterForm = () => {
         />
         <Link
           className="block"
-          href={`/login`}
+          href={`/api/auth/signin`}
         >
-          Already have an account?
+          Already have an account or do you want to login with Google or
+          Facebook?
         </Link>
         <Button type="submit">Submit</Button>
       </form>
