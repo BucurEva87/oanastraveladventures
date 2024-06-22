@@ -5,15 +5,15 @@
   position: relative;
   top: 1rem;
 
-  > div:first-child {
-    color: gray;
-    font-style: italic;
-  }
-
   div[role="menuitem"]:hover {
     all: unset;
     cursor: pointer;
   }
+}
+
+.dropdownmenuContent > div:first-child {
+  color: gray;
+  font-style: italic;
 }
 
 .avatar {
