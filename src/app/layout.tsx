@@ -29,7 +29,7 @@ export default async function RootLayout({
     >
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased",
+          "min-h-screen h-screen w-full flex-col bg-background font-sans antialiased",
           fontSans.variable,
           { "debug-screens": process.env.NODE_ENV === "development" }
         )}

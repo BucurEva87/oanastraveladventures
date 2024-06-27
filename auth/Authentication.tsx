@@ -1,6 +1,8 @@
 "use client"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { cn } from "@/lib/utils"
+import styles from "@/styles/navbar.module.css"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,11 +11,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu"
-import { signIn, signOut, useSession } from "next-auth/react"
-import styles from "@/styles/navbar.module.css"
-import { cn } from "@/lib/utils"
-import Link from "next/link"
 import { LogIn, UserPlus } from "lucide-react"
+import { signIn, signOut, useSession } from "next-auth/react"
+import Link from "next/link"
 
 const Authentication = () => {
   const { data: session } = useSession()
