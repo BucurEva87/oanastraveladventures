@@ -2,7 +2,6 @@
 
 import CitySelect from "@/components/CitySelect"
 import CountrySelect from "@/components/CountrySelect"
-import Map from "@/components/Map"
 import SectorSelect from "@/components/SectorSelect"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
@@ -14,6 +13,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { FormProvider, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
+import dynamic from "next/dynamic"
+
+const Map = dynamic(() => import("@/components/Map"), {
+  ssr: false,
+})
 
 const NewCityPageForm = () => {
   const form = useForm<z.infer<typeof createCitySchema>>({
@@ -106,7 +110,7 @@ const NewCityPageForm = () => {
 
             {watch("latitude") && (
               <div className="flex justify-center mt-2">
-                {/* <Map
+                <Map
                   center={[getValues("latitude"), getValues("longitude")]}
                   markers={[
                     {
@@ -114,7 +118,7 @@ const NewCityPageForm = () => {
                       position: [getValues("latitude"), getValues("longitude")],
                     },
                   ]}
-                /> */}
+                />
               </div>
             )}
 
