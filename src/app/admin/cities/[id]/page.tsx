@@ -1,14 +1,12 @@
-import { notFound } from "next/navigation"
-import prisma from "@/prisma/client"
-import PageTitle from "@/components/PageTitle"
 import Map from "@/components/Map"
+import PageTitle from "@/components/PageTitle"
+import prisma from "@/prisma/client"
+import { notFound } from "next/navigation"
 
 const CityPage = async ({ params: { id } }: Props) => {
   const city = await prisma.city.findUnique({
     where: { id },
   })
-
-  console.log(city)
 
   if (!city) notFound()
 
@@ -27,14 +25,11 @@ const CityPage = async ({ params: { id } }: Props) => {
       {!!city.latitude && !!city.longitude && (
         <div className="flex justify-center mt-2">
           <Map
-            center={[parseFloat(city.latitude), parseFloat(city.longitude)]}
+            center={[city.latitude, city.longitude]}
             markers={[
               {
                 popup: { text: `City ${city.name}` },
-                position: [
-                  parseFloat(city.latitude),
-                  parseFloat(city.longitude),
-                ],
+                position: [city.latitude, city.longitude],
               },
             ]}
           />
