@@ -106,7 +106,7 @@ const NewCityPageForm = () => {
 
             {watch("latitude") && (
               <div className="flex justify-center mt-2">
-                <Map
+                {/* <Map
                   center={[getValues("latitude"), getValues("longitude")]}
                   markers={[
                     {
@@ -114,7 +114,7 @@ const NewCityPageForm = () => {
                       position: [getValues("latitude"), getValues("longitude")],
                     },
                   ]}
-                />
+                /> */}
               </div>
             )}
 
