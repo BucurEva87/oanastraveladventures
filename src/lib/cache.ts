@@ -1,4 +1,4 @@
-import prisma from '../../prisma/client'
+import prisma from '../prisma/client'
 import { cache } from 'react'
 
 async function getCachedUsers() {

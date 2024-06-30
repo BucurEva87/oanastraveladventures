@@ -66,3 +66,71 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model City {
+  id          String  @id @default(cuid())
+  name        String  @db.VarChar(100)
+  country     String  @db.VarChar(100)
+  countryFlag String  @db.VarChar(10)
+  countryCode String  @db.Char(2)
+  sector      String  @db.VarChar(100)
+  sectorAuto  String  @db.VarChar(100)
+  latitude    Float
+  longitude   Float
+  description String? @db.Text
+
+  location Location[]
+  images   Image[]
+}
+
+model Location {
+  id          String  @id @default(cuid())
+  name        String  @db.VarChar(100)
+  cityId      String
+  type        String? @db.VarChar(100)
+  description String? @db.Text
+  website     String? @db.VarChar(255)
+  entryFee    Float?
+
+  city   City?           @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  offers RouteLocation[]
+  images Image[]
+}
+
+model Route {
+  id          String  @id @default(cuid())
+  name        String  @db.VarChar(100)
+  available   Boolean @default(true)
+  description String? @db.Text
+  prices      String  @db.VarChar(255)
+  circular    Boolean @default(false)
+  length      Int
+
+  locations RouteLocation[]
+  images    Image[]
+}
+
+model Image {
+  id         String  @id @default(cuid())
+  name       String
+  url        String
+  cityId     String?
+  routeId    String?
+  locationId String?
+
+  city     City?     @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  location Location? @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  route    Route?    @relation(fields: [routeId], references: [id], onDelete: Cascade)
+}
+
+model RouteLocation {
+  id         Int    @id @default(autoincrement())
+  locationId String
+  routeId    String
+  position   Int
+
+  location Location @relation(fields: [locationId], references: [id])
+  route    Route    @relation(fields: [routeId], references: [id])
+
+  @@unique([locationId, routeId])
+}

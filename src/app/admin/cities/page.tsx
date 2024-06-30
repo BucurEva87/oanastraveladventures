@@ -1,5 +1,31 @@
-const CitiesPage = () => {
-  return <div>CitiesPage</div>
+import DataTable from "@/components/DataTable"
+import PageTitle from "@/components/PageTitle"
+import { columns as citiesColumns } from "./citiesColumns"
+import Link from "next/link"
+import { City } from "@prisma/client"
+import prisma from "@/prisma/client"
+
+const CitiesPage = async () => {
+  const cities: City[] = await prisma.city.findMany()
+
+  return (
+    <div className="flex flex-col gap-5 w-full">
+      <PageTitle title="Cities" />
+
+      {cities.length ? (
+        <DataTable
+          columns={citiesColumns}
+          data={cities}
+        />
+      ) : (
+        <span>There are no cities</span>
+      )}
+
+      <Link href="/admin/cities/new">
+        {cities.length ? "Add another city" : "Perhaps add one?"}
+      </Link>
+    </div>
+  )
 }
 
 export default CitiesPage

@@ -20,7 +20,6 @@ export default function SelectRole({ currentRole, id }: SelectRoleProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ role }),
       })
-      console.log("A request should have been made by now")
 
       if (!response.ok)
         throw new Error(

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import prisma from "../../prisma/client"
+import prisma from "../prisma/client"
 
 export async function findUser(id: string) {
   const user = await prisma.user.findUnique({

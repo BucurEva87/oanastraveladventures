@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation"
-import PageTitle from "../../_components/PageTitle"
+import PageTitle from "@/components/PageTitle"
 import { findUser } from "@/lib/server"
 import UserCard from "../_components/UserCard"
 

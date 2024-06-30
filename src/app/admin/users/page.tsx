@@ -1,8 +1,8 @@
 // import { data as dataUsers } from "../../../../data/users"
-import PageTitle from "../_components/PageTitle"
+import PageTitle from "@/components/PageTitle"
 import DataTable from "@/components/DataTable"
 import { columns as usersColumns } from "./usersColumns"
-import prisma from "../../../../prisma/client"
+import prisma from "@/prisma/client"
 
 export default async function UsersPage() {
   const users = await prisma.user.findMany({
