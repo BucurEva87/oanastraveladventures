@@ -23,7 +23,7 @@ export const CountrySelect = () => {
     if (!options.length) {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/countries`
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/geodata/countries`
         )
         const options: CountryFromAPI[] = await response.json()
 

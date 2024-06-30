@@ -4,28 +4,38 @@ import { columns as citiesColumns } from "./citiesColumns"
 import Link from "next/link"
 import { City } from "@prisma/client"
 import prisma from "@/prisma/client"
+import Notification from "@/components/Notification"
 
-const CitiesPage = async () => {
+const CitiesPage = async ({ searchParams }: Props) => {
   const cities: City[] = await prisma.city.findMany()
 
   return (
-    <div className="flex flex-col gap-5 w-full">
-      <PageTitle title="Cities" />
+    <>
+      <div className="flex flex-col gap-5 w-full">
+        <PageTitle title="Cities" />
 
-      {cities.length ? (
-        <DataTable
-          columns={citiesColumns}
-          data={cities}
-        />
-      ) : (
-        <span>There are no cities</span>
-      )}
+        {cities.length ? (
+          <DataTable
+            columns={citiesColumns}
+            data={cities}
+          />
+        ) : (
+          <span>There are no cities</span>
+        )}
 
-      <Link href="/admin/cities/new">
-        {cities.length ? "Add another city" : "Perhaps add one?"}
-      </Link>
-    </div>
+        <Link href="/admin/cities/new">
+          {cities.length ? "Add another city" : "Perhaps add one?"}
+        </Link>
+      </div>
+      <Notification searchParams={searchParams} />
+    </>
   )
+}
+
+type Props = {
+  searchParams?: {
+    [key: string]: string | undefined
+  }
 }
 
 export default CitiesPage

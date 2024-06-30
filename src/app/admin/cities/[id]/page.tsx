@@ -1,5 +1,6 @@
+import DeleteResourceButton from "@/components/DeleteResourceButton"
+import EditResourceButton from "@/components/EditResourceButton"
 import Map from "@/components/Map"
-import PageTitle from "@/components/PageTitle"
 import prisma from "@/prisma/client"
 import { notFound } from "next/navigation"
 
@@ -10,32 +11,65 @@ const CityPage = async ({ params: { id } }: Props) => {
 
   if (!city) notFound()
 
+  const {
+    name,
+    country,
+    countryFlag,
+    countryCode,
+    sector,
+    sectorAuto,
+    description,
+    latitude,
+    longitude,
+  } = city
+
   return (
-    <>
-      <PageTitle title={city.name} />
-      <div className="mt-10">
-        <p>
-          Country: {city.country} ({city.countryCode}) {city.countryFlag}
-        </p>
-        <p>
-          Sector: {city.sector} ({city.sectorAuto})
-        </p>
-        <p>Description: {city.description}</p>
-      </div>
-      {!!city.latitude && !!city.longitude && (
-        <div className="flex justify-center mt-2">
-          <Map
-            center={[city.latitude, city.longitude]}
-            markers={[
-              {
-                popup: { text: `City ${city.name}` },
-                position: [city.latitude, city.longitude],
-              },
-            ]}
+    <div className="container mx-auto p-4">
+      <div className="bg-white dark:bg-slate-900 shadow-lg rounded-lg p-6 flex flex-col items-center">
+        <h1 className="text-3xl font-bold mb-4 text-center">{name}</h1>
+        <div className="flex items-center mb-4">
+          <span className="text-xl font-semibold">{country}</span>
+          <span className="mx-2 text-gray-500">({countryCode})</span>
+          <span className="ml-2">{countryFlag}</span>
+        </div>
+        <div className="mb-4">
+          <span className="text-gray-700">Sector: </span>
+          <span>{sector}</span>
+        </div>
+        <div className="mb-4">
+          <span className="text-gray-700">Sector Auto: </span>
+          <span>{sectorAuto}</span>
+        </div>
+        <div className="mb-4">
+          <span className="text-gray-700">Description: </span>
+          <p className="inline-block">{description}</p>
+        </div>
+        {!!latitude && !!longitude && (
+          <div className="mb-4">
+            <Map
+              center={[latitude, longitude]}
+              markers={[
+                {
+                  popup: { text: `City ${name}` },
+                  position: [latitude, longitude],
+                },
+              ]}
+            />
+          </div>
+        )}
+        <div className="flex space-x-4">
+          <EditResourceButton
+            resource="city"
+            url={`/admin/cities/${id}/edit`}
+          />
+          <DeleteResourceButton
+            resource="city"
+            url={`/cities/${id}`}
+            backref="/admin/cities"
           />
         </div>
-      )}
-    </>
+      </div>
+    </div>
   )
 }
 

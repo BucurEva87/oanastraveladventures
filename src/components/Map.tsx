@@ -11,10 +11,10 @@ const Map = (props: Props) => {
     <div>
       <MapContainer
         style={{
-          width: "clamp(380px, 80vw, 800px)",
-          height: "400px",
+          width: "clamp(150px, 52vw, 800px)",
+          height: "300px",
         }}
-        center={props.center} //[51.505, -0.09]
+        center={props.center}
         zoom={props.zoom || 13}
         scrollWheelZoom={false}
       >
@@ -33,11 +33,9 @@ const Map = (props: Props) => {
                 iconSize: marker.icon?.size || [32, 32],
                 iconAnchor: marker.icon?.anchor || [12.5, 41],
                 popupAnchor: marker.popup?.anchor || [0, -41],
-                // shadowUrl: MarkerShadow.src,
-                // shadowSize: [41, 41]
               })
             }
-            position={marker.position} //[51.505, -0.09]
+            position={marker.position}
           >
             <Popup>{marker.popup.text}</Popup>
           </Marker>

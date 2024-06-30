@@ -20,15 +20,12 @@ export const CitySelect = ({ country, sector }: Props) => {
   const [selectedOption, setSelectedOption] = useState<CityFromAPI | null>()
 
   const loadOptions = async (inputValue: string): Promise<CityFromAPI[]> => {
-    console.log(options.length, "cities in memory")
     if (!options.length) {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/cities/${country}/${sector}`
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/geodata/cities/${country}/${sector}`
         )
         const cities: CityFromAPI[] = await response.json()
-
-        console.log("Got back", cities.length, "cities")
 
         setOptions(cities)
       } catch (error) {
@@ -47,7 +44,7 @@ export const CitySelect = ({ country, sector }: Props) => {
 
   const loadCoords = async (city: string) => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/coord/${country}/${sector}/${city}`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/geodata/coord/${country}/${sector}/${city}`
     )
     const [lat, lon]: CoordFromAPI = await response.json()
 

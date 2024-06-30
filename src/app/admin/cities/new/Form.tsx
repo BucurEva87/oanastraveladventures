@@ -10,10 +10,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { createCitySchema } from "@/schemas/cities"
 import { DevTool } from "@hookform/devtools"
 import { zodResolver } from "@hookform/resolvers/zod"
+import dynamic from "next/dynamic"
+import { useRouter } from "next/navigation"
 import { FormProvider, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
-import dynamic from "next/dynamic"
 
 const Map = dynamic(() => import("@/components/Map"), {
   ssr: false,
@@ -26,6 +27,7 @@ const NewCityPageForm = () => {
   })
   const { register, control, getValues, handleSubmit, watch, formState } = form
   const { isValid } = formState
+  const router = useRouter()
 
   const onSubmit = async (values: z.infer<typeof createCitySchema>) => {
     const response = await fetch(
@@ -44,7 +46,8 @@ const NewCityPageForm = () => {
       return
     }
 
-    toast.message("City would be created successfully")
+    toast.message(`City ${values.name} was created successfully`)
+    router.push("/admin/cities")
   }
 
   return (

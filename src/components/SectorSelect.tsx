@@ -23,7 +23,7 @@ export const SectorSelect = ({ country }: Props) => {
     if (!options.length) {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/sectors/${country}`
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/geodata/sectors/${country}`
         )
         const sectors: SectorFromAPI[] = await response.json()
 
