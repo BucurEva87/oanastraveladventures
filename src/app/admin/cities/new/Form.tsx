@@ -2,6 +2,7 @@
 
 import CitySelect from "@/components/CitySelect"
 import CountrySelect from "@/components/CountrySelect"
+import { notify } from "@/components/Notification"
 import SectorSelect from "@/components/SectorSelect"
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
@@ -23,11 +24,17 @@ const Map = dynamic(() => import("@/components/Map"), {
 const NewCityPageForm = () => {
   const form = useForm<z.infer<typeof createCitySchema>>({
     resolver: zodResolver(createCitySchema),
-    defaultValues: {},
+    defaultValues: {
+      latitude: null,
+      longitude: null,
+    },
   })
   const { register, control, getValues, handleSubmit, watch, formState } = form
   const { isValid } = formState
   const router = useRouter()
+
+  const lat = getValues("latitude")
+  const lon = getValues("longitude")
 
   const onSubmit = async (values: z.infer<typeof createCitySchema>) => {
     const response = await fetch(
@@ -42,11 +49,19 @@ const NewCityPageForm = () => {
     )
 
     if (!response) {
-      toast.error("Something went bad. See terminal")
+      notify({
+        type: "error",
+        title: "Oups! There was an error",
+        description: "Something went bad. Please see the terminal",
+      })
       return
     }
 
-    toast.message(`City ${values.name} was created successfully`)
+    notify({
+      type: "success",
+      title: "Yahoo! You did it!",
+      description: `City ${values.name} was created successfully`,
+    })
     router.push("/admin/cities")
   }
 
@@ -111,14 +126,14 @@ const NewCityPageForm = () => {
               />
             )}
 
-            {watch("latitude") && (
+            {!!watch("latitude") && !!lat && !!lon && (
               <div className="flex justify-center mt-2">
                 <Map
-                  center={[getValues("latitude"), getValues("longitude")]}
+                  center={[lat, lon]}
                   markers={[
                     {
                       popup: { text: `City ${getValues("name")}` },
-                      position: [getValues("latitude"), getValues("longitude")],
+                      position: [lat, lon],
                     },
                   ]}
                 />

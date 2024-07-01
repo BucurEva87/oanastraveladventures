@@ -4,7 +4,7 @@ import { columns as citiesColumns } from "./citiesColumns"
 import Link from "next/link"
 import { City } from "@prisma/client"
 import prisma from "@/prisma/client"
-import Notification from "@/components/Notification"
+import { SystemNotification } from "@/components/Notification"
 
 const CitiesPage = async ({ searchParams }: Props) => {
   const cities: City[] = await prisma.city.findMany()
@@ -27,7 +27,7 @@ const CitiesPage = async ({ searchParams }: Props) => {
           {cities.length ? "Add another city" : "Perhaps add one?"}
         </Link>
       </div>
-      <Notification searchParams={searchParams} />
+      <SystemNotification searchParams={searchParams} />
     </>
   )
 }

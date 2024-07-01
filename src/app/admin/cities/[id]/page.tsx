@@ -2,6 +2,7 @@ import DeleteResourceButton from "@/components/DeleteResourceButton"
 import EditResourceButton from "@/components/EditResourceButton"
 import Map from "@/components/Map"
 import prisma from "@/prisma/client"
+import Link from "next/link"
 import { notFound } from "next/navigation"
 
 const CityPage = async ({ params: { id } }: Props) => {
@@ -67,6 +68,7 @@ const CityPage = async ({ params: { id } }: Props) => {
             url={`/cities/${id}`}
             backref="/admin/cities"
           />
+          <Link href={`/admin/cities/${id}/image`}>Test images</Link>
         </div>
       </div>
     </div>

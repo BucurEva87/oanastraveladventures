@@ -43,11 +43,11 @@ export const sortDesc = (key: string) => {
 }
 
 export const convertDMSToDD = (dms: string) => {
-	const regex = /(\d+)°(\d+)′(\d+)″([NSEW])/
+	const regex = /([\d\.]+)°([\d\.]+)[′']([\d\.]+)[″"]([NSEW])/
 	const matches = dms.match(regex)
 
 	if (!matches || matches.length !== 5)
-		return dms
+		return parseFloat(dms) || null
 
 	const degrees = parseFloat(matches[1])
 	const minutes = parseFloat(matches[2])
@@ -60,4 +60,4 @@ export const convertDMSToDD = (dms: string) => {
 		dd = -dd
 
 	return dd
-};
+}

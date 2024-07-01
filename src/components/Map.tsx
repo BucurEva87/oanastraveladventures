@@ -1,10 +1,11 @@
 "use client"
 
-import MarkerIcon from "../../leaflet/images/marker.png"
 import L, { LatLngExpression, PointExpression } from "leaflet"
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet"
-import "../../leaflet/map.css"
 import { StaticImageData } from "next/image"
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet"
+import MarkerIcon from "../../leaflet/images/marker.png"
+import "../../leaflet/map.css"
+import MapRecenterAutomatically from "./MapRecenterAutomatically"
 
 const Map = (props: Props) => {
   return (
@@ -40,6 +41,7 @@ const Map = (props: Props) => {
             <Popup>{marker.popup.text}</Popup>
           </Marker>
         ))}
+        <MapRecenterAutomatically center={props.center} />
       </MapContainer>
     </div>
   )

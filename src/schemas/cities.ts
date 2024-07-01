@@ -7,7 +7,13 @@ export const createCitySchema = z.object({
   countryCode: z.string().length(2),
   sector: z.string().max(100),
   sectorAuto: z.string().max(100),
-  latitude: z.number(),
-  longitude: z.number(),
-  description: z.string().optional()
+  latitude: z.number().nullable(),
+  longitude: z.number().nullable(),
+  description: z.string().nullable()
+})
+
+export const updateCitySchema = z.object({
+  latitude: z.number().nullable(),
+  longitude: z.number().nullable(),
+  description: z.string().nullable()
 })

@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     )
 
   const newCity = await prisma.city.create({
-    data: { ...validation.data }
+    data: validation.data
   })
 
   if (!newCity)

@@ -75,8 +75,8 @@ model City {
   countryCode String  @db.Char(2)
   sector      String  @db.VarChar(100)
   sectorAuto  String  @db.VarChar(100)
-  latitude    Float
-  longitude   Float
+  latitude    Float?
+  longitude   Float?
   description String? @db.Text
 
   location Location[]
