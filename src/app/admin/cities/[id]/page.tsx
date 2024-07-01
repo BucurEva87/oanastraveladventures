@@ -1,5 +1,5 @@
-import DeleteResourceButton from "@/components/DeleteResourceButton"
-import EditResourceButton from "@/components/EditResourceButton"
+import DeleteResourceButton from "@/components/buttons/DeleteResourceButton"
+import EditResourceButton from "@/components/buttons/EditResourceButton"
 import Map from "@/components/Map"
 import prisma from "@/prisma/client"
 import Link from "next/link"

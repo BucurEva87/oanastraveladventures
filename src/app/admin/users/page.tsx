@@ -1,4 +1,3 @@
-// import { data as dataUsers } from "../../../../data/users"
 import PageTitle from "@/components/PageTitle"
 import DataTable from "@/components/DataTable"
 import { columns as usersColumns } from "./usersColumns"

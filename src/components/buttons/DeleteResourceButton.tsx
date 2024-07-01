@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { toast } from "sonner"
+import { notify } from "../Notification"
 
 const DeleteResourceButton = ({ resource, url, backref }: Props) => {
   const router = useRouter()
@@ -14,14 +14,30 @@ const DeleteResourceButton = ({ resource, url, backref }: Props) => {
       )
 
       if (!response.ok) {
-        toast.error("City could not be deleted")
+        notify({
+          type: "error",
+          title: "Oups! There was an error",
+          description: `${resource[0].toUpperCase()}${resource.substring(
+            1
+          )} could not be deleted`,
+        })
         return
       }
     } catch (error) {
-      toast.error("There was an error while processing the request")
+      notify({
+        type: "error",
+        title: "Oups! There was an error",
+        description: "There was an error while processing the request",
+      })
     }
 
-    toast.message("City was deleted successfully")
+    notify({
+      type: "success",
+      title: "Yahoo! You did it!",
+      description: `${resource[0].toUpperCase()}${resource.substring(
+        1
+      )} was deleted successfully`,
+    })
     router.push(`${backref}?notice=DEL_DELAY`)
   }
 

@@ -1,10 +1,10 @@
 "use client"
 
+import SubmitResourceButton from "@/components/buttons/SubmitResourceButton"
 import CitySelect from "@/components/CitySelect"
 import CountrySelect from "@/components/CountrySelect"
 import { notify } from "@/components/Notification"
 import SectorSelect from "@/components/SectorSelect"
-import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -24,6 +24,7 @@ const NewCityPageForm = () => {
   const form = useForm<z.infer<typeof createCitySchema>>({
     resolver: zodResolver(createCitySchema),
     defaultValues: {
+      description: "",
       latitude: null,
       longitude: null,
     },
@@ -120,8 +121,9 @@ const NewCityPageForm = () => {
             {watch("name") && (
               <Textarea
                 {...register("description")}
+                className="mt-4"
                 placeholder={`Please provide a description of ${watch("name")}`}
-                rows={10}
+                rows={8}
               />
             )}
 
@@ -141,7 +143,7 @@ const NewCityPageForm = () => {
 
             {!!isValid && (
               <div className="flex justify-center">
-                <Button type="submit">Add {getValues("name")}!</Button>
+                <SubmitResourceButton resource={`Add ${getValues("name")}`} />
               </div>
             )}
           </form>
