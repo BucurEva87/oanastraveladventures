@@ -13,7 +13,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { City } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
-import { toast } from "sonner"
 import { z } from "zod"
 
 const EditCityPageForm = ({ city }: Props) => {
@@ -44,7 +43,7 @@ const EditCityPageForm = ({ city }: Props) => {
     setValue,
     watch,
     handleSubmit,
-    formState: { isValid, errors },
+    formState: { isValid },
   } = form
   const router = useRouter()
 
@@ -71,9 +70,9 @@ const EditCityPageForm = ({ city }: Props) => {
 
     if (!response) {
       notify({
-        type: "success",
-        title: "Yahoo! You did it!",
-        description: `City ${values.name} was created successfully`,
+        type: "error",
+        title: "Oups! There was an error",
+        description: "Something went bad. Please see the terminal",
       })
       return
     }
@@ -81,7 +80,7 @@ const EditCityPageForm = ({ city }: Props) => {
     notify({
       type: "success",
       title: "Yahoo! You did it!",
-      description: `City ${values.name} was updated successfully`,
+      description: `City ${name} was updated successfully`,
     })
     router.push("/admin/cities")
   }
