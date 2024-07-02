@@ -32,6 +32,7 @@ const NewLocationPageForm = ({ cities }: Props) => {
   const form = useForm<z.infer<typeof createLocationSchema>>({
     resolver: zodResolver(createLocationSchema),
     defaultValues: {
+      cityId: cities.length === 1 ? cities[0].id : undefined,
       type: null,
       description: "",
       website: null,
@@ -204,6 +205,8 @@ const NewLocationPageForm = ({ cities }: Props) => {
               {...register("entryFee", {
                 valueAsNumber: true,
               })}
+              type="number"
+              step={0.01}
               placeholder="How much does visiting this location cost?"
             />
           </FormGroupControl>

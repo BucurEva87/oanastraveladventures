@@ -9,24 +9,33 @@ const Map = dynamic(() => import("@/components/Map"), {
   ssr: false,
 })
 
-const CityPage = async ({ params: { id } }: Props) => {
-  const city = await prisma.city.findUnique({
+const LocationPage = async ({ params: { id } }: Props) => {
+  const location = await prisma.location.findUnique({
     where: { id },
+    include: {
+      city: {
+        select: {
+          name: true,
+          sector: true,
+          country: true,
+          countryFlag: true,
+        },
+      },
+    },
   })
 
-  if (!city) notFound()
+  if (!location || !location.city) notFound()
 
   const {
     name,
-    country,
-    countryFlag,
-    countryCode,
-    sector,
-    sectorAuto,
+    type,
     description,
+    website,
+    entryFee,
     latitude,
     longitude,
-  } = city
+    city: { name: cityName, sector, country, countryFlag },
+  } = location
 
   return (
     <div className="container mx-auto p-4">
@@ -34,21 +43,40 @@ const CityPage = async ({ params: { id } }: Props) => {
         <h1 className="text-3xl font-bold mb-4 text-center">{name}</h1>
         <div className="flex items-center mb-4">
           <span className="text-xl font-semibold">{country}</span>
-          <span className="mx-2 text-gray-500">({countryCode})</span>
           <span className="ml-2">{countryFlag}</span>
+        </div>
+        <div className="mb-4">
+          <span className="text-gray-700">City: </span>
+          <span>{cityName}</span>
         </div>
         <div className="mb-4">
           <span className="text-gray-700">Sector: </span>
           <span>{sector}</span>
         </div>
-        <div className="mb-4">
-          <span className="text-gray-700">Sector Auto: </span>
-          <span>{sectorAuto}</span>
-        </div>
+        {!!type && (
+          <div className="mb-4">
+            <span className="text-gray-700">Type: </span>
+            <p className="inline-block">{type}</p>
+          </div>
+        )}
         {!!description && (
           <div className="mb-4">
             <span className="text-gray-700">Description: </span>
             <p className="inline-block">{description}</p>
+          </div>
+        )}
+        {!!website && (
+          <div className="mb-4">
+            <span className="text-gray-700">Website: </span>
+            <p className="inline-block">
+              <Link href={website}>{website}</Link>
+            </p>
+          </div>
+        )}
+        {!!entryFee && (
+          <div className="mb-4">
+            <span className="text-gray-700">Entry fee: </span>
+            <p className="inline-block">{entryFee}</p>
           </div>
         )}
         {!!latitude && !!longitude && (
@@ -57,7 +85,7 @@ const CityPage = async ({ params: { id } }: Props) => {
               center={[latitude, longitude]}
               markers={[
                 {
-                  popup: { text: `City ${name}` },
+                  popup: { text: name },
                   position: [latitude, longitude],
                 },
               ]}
@@ -66,15 +94,14 @@ const CityPage = async ({ params: { id } }: Props) => {
         )}
         <div className="flex space-x-4">
           <EditResourceButton
-            resource="city"
-            url={`/admin/cities/${id}/edit`}
+            resource="location"
+            url={`/admin/locations/${id}/edit`}
           />
           <DeleteResourceButton
-            resource="city"
-            url={`/cities/${id}`}
-            backref="/admin/cities"
+            resource="location"
+            url={`/locations/${id}`}
+            backref="/admin/locations"
           />
-          <Link href={`/admin/cities/${id}/image`}>Test images</Link>
         </div>
       </div>
     </div>
@@ -87,4 +114,4 @@ type Props = {
   }
 }
 
-export default CityPage
+export default LocationPage
