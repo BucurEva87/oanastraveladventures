@@ -22,9 +22,14 @@ export const columns: ColumnDef<LocationWithCity>[] = [
     accessorKey: "country",
     header: "Location",
     cell: ({ row }) => {
-      const { name: city, sector, country, countryFlag } = row.original.city
+      const { id, name: city, sector, country, countryFlag } = row.original.city
 
-      return <span>{`${city}, ${sector}, ${country} ${countryFlag}`}</span>
+      return (
+        <span>
+          <Link href={`/admin/cities/${id}`}>{city}</Link>
+          {`, ${sector}, ${country} ${countryFlag}`}
+        </span>
+      )
     },
   },
   {

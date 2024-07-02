@@ -42,5 +42,5 @@ export type CoordFromAPI = [
 ]
 
 export type LocationWithCity = Location & {
-  city: Pick<City, 'name' | 'country' | 'sector' | 'countryFlag'>
+  city: Pick<City, 'id' | 'name' | 'country' | 'sector' | 'countryFlag'>
 }

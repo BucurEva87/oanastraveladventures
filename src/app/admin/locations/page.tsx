@@ -12,6 +12,7 @@ const LocationsPage = async ({ searchParams }: Props) => {
       include: {
         city: {
           select: {
+            id: true,
             name: true,
             sector: true,
             country: true,

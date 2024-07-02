@@ -1,8 +1,8 @@
 import DeleteResourceButton from "@/components/buttons/DeleteResourceButton"
 import EditResourceButton from "@/components/buttons/EditResourceButton"
+import ExternalLink from "@/components/ExternalLink"
 import prisma from "@/prisma/client"
 import dynamic from "next/dynamic"
-import Link from "next/link"
 import { notFound } from "next/navigation"
 
 const Map = dynamic(() => import("@/components/Map"), {
@@ -69,7 +69,7 @@ const LocationPage = async ({ params: { id } }: Props) => {
           <div className="mb-4">
             <span className="text-gray-700">Website: </span>
             <p className="inline-block">
-              <Link href={website}>{website}</Link>
+              <ExternalLink href={website}>{website}</ExternalLink>
             </p>
           </div>
         )}
