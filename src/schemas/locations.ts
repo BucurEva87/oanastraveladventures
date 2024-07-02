@@ -10,3 +10,12 @@ export const createLocationSchema = z.object({
   latitude: z.number().positive().nullable(),
   longitude: z.number().positive().nullable()
 })
+
+export const updateLocationschema = z.object({
+  type: z.string().max(100).nullable(),
+  description: z.string().nullable(),
+  website: z.string().max(255).nullable(),
+  entryFee: z.number().positive().nullable(),
+  latitude: z.number().positive().nullable(),
+  longitude: z.number().positive().nullable()
+})

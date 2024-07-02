@@ -10,30 +10,33 @@ import { convertDMSToDD } from "@/lib/utils"
 import { updateCitySchema } from "@/schemas/cities"
 import { DevTool } from "@hookform/devtools"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { City } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import FormGroupControl from "@/components/FormGroupControl"
+import { LocationWithCity } from "@/types"
+import { updateLocationschema } from "@/schemas/locations"
 import { useEffect } from "react"
 
-const EditCityPageForm = ({ city }: Props) => {
+const EditLocationPageForm = ({ location }: Props) => {
   const {
     id,
     name,
-    country,
-    countryCode,
-    countryFlag,
-    sector,
-    sectorAuto,
+    type,
     description,
+    website,
+    entryFee,
     latitude,
     longitude,
-  } = city
-  const form = useForm<z.infer<typeof updateCitySchema>>({
-    resolver: zodResolver(updateCitySchema),
+    city: { name: cityName, sector, country, countryFlag },
+  } = location
+  const form = useForm<z.infer<typeof updateLocationschema>>({
+    resolver: zodResolver(updateLocationschema),
     defaultValues: {
+      type,
       description,
+      website,
+      entryFee,
       latitude: latitude ?? undefined,
       longitude: longitude ?? undefined,
     },
@@ -65,9 +68,9 @@ const EditCityPageForm = ({ city }: Props) => {
     setValue("longitude", longitude, { shouldTouch: true })
   }, [latitude, longitude, setValue])
 
-  const onSubmit = async (values: z.infer<typeof updateCitySchema>) => {
+  const onSubmit = async (values: z.infer<typeof updateLocationschema>) => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/cities/${id}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/locations/${id}`,
       {
         method: "PATCH",
         body: JSON.stringify(values),
@@ -86,9 +89,9 @@ const EditCityPageForm = ({ city }: Props) => {
     notify({
       type: "success",
       title: "Yahoo! You did it!",
-      description: `City ${name} was updated successfully`,
+      description: `${name} was updated successfully`,
     })
-    router.push("/admin/cities")
+    router.push("/admin/locations")
   }
 
   return (
@@ -98,20 +101,19 @@ const EditCityPageForm = ({ city }: Props) => {
           <div className="container mx-auto p-4">
             <div className="bg-white dark:bg-slate-900 shadow-lg rounded-lg p-6 flex flex-col items-center">
               <h1 className="text-2xl font-semibold mb-4 text-center">
-                Let&apos;s edit city {city.name}!
+                Let&apos;s edit {name}!
               </h1>
               <div className="flex items-center mb-4">
                 <span className="text-xl font-semibold">{country}</span>
-                <span className="mx-2 text-gray-500">({countryCode})</span>
                 <span className="ml-2">{countryFlag}</span>
+              </div>
+              <div className="mb-4">
+                <span className="text-gray-700">City: </span>
+                <span>{cityName}</span>
               </div>
               <div className="mb-4">
                 <span className="text-gray-700">Sector: </span>
                 <span>{sector}</span>
-              </div>
-              <div className="mb-4">
-                <span className="text-gray-700">Sector Auto: </span>
-                <span>{sectorAuto}</span>
               </div>
 
               <div className="flex w-full gap-2">
@@ -158,6 +160,34 @@ const EditCityPageForm = ({ city }: Props) => {
                 />
               </FormGroupControl>
 
+              <FormGroupControl label="Type">
+                <Input
+                  {...register("type")}
+                  placeholder="Location type (ex: restaurant, museum)"
+                  defaultValue={type ?? undefined}
+                />
+              </FormGroupControl>
+
+              <FormGroupControl label="Website">
+                <Input
+                  {...register("website")}
+                  placeholder="Website of the location"
+                  defaultValue={website ?? undefined}
+                />
+              </FormGroupControl>
+
+              <FormGroupControl label="Entry Fee">
+                <Input
+                  {...register("entryFee", {
+                    valueAsNumber: true,
+                  })}
+                  type="number"
+                  step={0.01}
+                  placeholder="How much does visiting this location cost?"
+                  defaultValue={entryFee ?? undefined}
+                />
+              </FormGroupControl>
+
               {!!watch("latitude") &&
                 !!watch("longitude") &&
                 !!lat &&
@@ -190,7 +220,7 @@ const EditCityPageForm = ({ city }: Props) => {
 }
 
 type Props = {
-  city: City
+  location: LocationWithCity
 }
 
-export default EditCityPageForm
+export default EditLocationPageForm

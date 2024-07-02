@@ -14,8 +14,6 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     )
 
-  console.log(validation.data)
-
   const newLocation = await prisma.location.create({
     data: validation.data
   })
