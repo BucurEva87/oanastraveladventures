@@ -1,30 +1,32 @@
 "use client"
 
 import SubmitResourceButton from "@/components/buttons/SubmitResourceButton"
-import CitySelect from "@/components/CitySelectFromAPI"
+import FormGroupControl from "@/components/FormGroupControl"
 import { notify } from "@/components/Notification"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { createLocationSchema } from "@/schemas/locations"
+import { CoordFromAPI } from "@/types"
 import { DevTool } from "@hookform/devtools"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { City } from "@prisma/client"
+import dynamic from "next/dynamic"
 import { useRouter } from "next/navigation"
-import { Controller, useForm } from "react-hook-form"
-import { z } from "zod"
-import Select from "react-select"
-import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-  Form,
-} from "@/components/ui/form"
 import { useState } from "react"
-import Map from "@/components/Map"
-import { CoordFromAPI } from "@/types"
-import FormGroupControl from "@/components/FormGroupControl"
+import { useForm } from "react-hook-form"
+import Select from "react-select"
+import { z } from "zod"
+
+const Map = dynamic(() => import("@/components/Map"), {
+  ssr: false,
+})
 
 const NewLocationPageForm = ({ cities }: Props) => {
   const form = useForm<z.infer<typeof createLocationSchema>>({
