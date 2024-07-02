@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "./ui/form"
 
-export const SectorSelect = ({ country }: Props) => {
+export const SectorSelectFromAPI = ({ country }: Props) => {
   const { control, setValue } = useFormContext()
   const [options, setOptions] = useState<SectorFromAPI[]>([])
   const [selectedOption, setSelectedOption] = useState<SectorFromAPI | null>()
@@ -62,7 +62,6 @@ export const SectorSelect = ({ country }: Props) => {
       render={({ field }) => {
         return (
           <FormItem>
-            <FormLabel>Sector</FormLabel>
             <FormControl>
               <AsyncSelect
                 {...field}
@@ -100,4 +99,4 @@ type Props = {
   country: string
 }
 
-export default SectorSelect
+export default SectorSelectFromAPI

@@ -1,10 +1,11 @@
 "use client"
 
 import SubmitResourceButton from "@/components/buttons/SubmitResourceButton"
-import CitySelect from "@/components/CitySelect"
-import CountrySelect from "@/components/CountrySelect"
+import CitySelectFromAPI from "@/components/CitySelectFromAPI"
+import CountrySelectFromAPI from "@/components/CountrySelectFromAPI"
+import FormGroupControl from "@/components/FormGroupControl"
 import { notify } from "@/components/Notification"
-import SectorSelect from "@/components/SectorSelect"
+import SectorSelectFromAPI from "@/components/SectorSelectFromAPI"
 import { Form } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -41,9 +42,6 @@ const NewCityPageForm = () => {
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/cities`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(values),
       }
     )
@@ -74,7 +72,9 @@ const NewCityPageForm = () => {
               Let&apos;s add a new city!
             </h1>
 
-            <CountrySelect />
+            <FormGroupControl label="Country">
+              <CountrySelectFromAPI />
+            </FormGroupControl>
 
             <Input
               {...register("countryFlag")}
@@ -87,7 +87,9 @@ const NewCityPageForm = () => {
 
             {watch("country") && (
               <>
-                <SectorSelect country={watch("country")} />
+                <FormGroupControl label="Sector">
+                  <SectorSelectFromAPI country={watch("country")} />
+                </FormGroupControl>
 
                 <Input
                   {...register("sectorAuto")}
@@ -98,10 +100,12 @@ const NewCityPageForm = () => {
 
             {watch("sector") && (
               <>
-                <CitySelect
-                  country={watch("country")}
-                  sector={watch("sectorAuto")}
-                />
+                <FormGroupControl label="City">
+                  <CitySelectFromAPI
+                    country={watch("country")}
+                    sector={watch("sectorAuto")}
+                  />
+                </FormGroupControl>
 
                 <Input
                   {...register("latitude", {
@@ -119,12 +123,15 @@ const NewCityPageForm = () => {
             )}
 
             {watch("name") && (
-              <Textarea
-                {...register("description")}
-                className="mt-4"
-                placeholder={`Please provide a description of ${watch("name")}`}
-                rows={8}
-              />
+              <FormGroupControl label="Description">
+                <Textarea
+                  {...register("description")}
+                  placeholder={`Please provide a description of ${watch(
+                    "name"
+                  )}`}
+                  rows={8}
+                />
+              </FormGroupControl>
             )}
 
             {!!watch("latitude") && !!lat && !!lon && (

@@ -14,7 +14,7 @@ import { SingleValue } from "react-select"
 import { useState } from "react"
 import { toast } from "sonner"
 
-export const CountrySelect = () => {
+export const CountrySelectFromAPI = () => {
   const { control, setValue } = useFormContext()
   const [options, setOptions] = useState<CountryFromAPI[]>([])
   const [selectedOption, setSelectedOption] = useState<CountryFromAPI>()
@@ -49,7 +49,6 @@ export const CountrySelect = () => {
       render={({ field }) => {
         return (
           <FormItem>
-            <FormLabel>Country</FormLabel>
             <FormControl>
               <AsyncSelect
                 {...field}
@@ -87,4 +86,4 @@ export const CountrySelect = () => {
   )
 }
 
-export default CountrySelect
+export default CountrySelectFromAPI

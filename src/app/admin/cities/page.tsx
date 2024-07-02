@@ -1,6 +1,6 @@
 import DataTable from "@/components/DataTable"
 import PageTitle from "@/components/PageTitle"
-import { columns as citiesColumns } from "./citiesColumns"
+import { columns } from "./columns"
 import Link from "next/link"
 import { City } from "@prisma/client"
 import prisma from "@/prisma/client"
@@ -16,7 +16,7 @@ const CitiesPage = async ({ searchParams }: Props) => {
 
         {cities.length ? (
           <DataTable
-            columns={citiesColumns}
+            columns={columns}
             data={cities}
           />
         ) : (

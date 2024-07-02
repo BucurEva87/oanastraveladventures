@@ -1,3 +1,5 @@
+import { City, Location } from "@prisma/client"
+
 export type CountryGivenFromAPI = {
   name: {
     common?: string
@@ -38,3 +40,7 @@ export type CoordFromAPI = [
   number | null,
   number | null
 ]
+
+export type LocationWithCity = Location & {
+  city: Pick<City, 'name' | 'country' | 'sector' | 'countryFlag'>
+}

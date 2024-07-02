@@ -14,6 +14,7 @@ import { City } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import FormGroupControl from "@/components/FormGroupControl"
 
 const EditCityPageForm = ({ city }: Props) => {
   const {
@@ -108,41 +109,49 @@ const EditCityPageForm = ({ city }: Props) => {
                 <span>{sectorAuto}</span>
               </div>
 
-              <Input
-                {...latRegisterProps}
-                placeholder="Insert latitude"
-                defaultValue={latitude ? latitude : 0}
-                type="text"
-                onBlur={(e) => {
-                  setValue("latitude", convertDMSToDD(e.target.value), {
-                    shouldDirty: true,
-                    shouldTouch: true,
-                  })
+              <div className="flex w-full gap-2">
+                <FormGroupControl label="Latitude">
+                  <Input
+                    {...latRegisterProps}
+                    placeholder="Insert latitude"
+                    defaultValue={latitude ? latitude : 0}
+                    type="text"
+                    onBlur={(e) => {
+                      setValue("latitude", convertDMSToDD(e.target.value), {
+                        shouldDirty: true,
+                        shouldTouch: true,
+                      })
 
-                  latOnBlur(e)
-                }}
-              />
-              <Input
-                {...lonRegisterProps}
-                placeholder="Insert longitude"
-                defaultValue={longitude ? longitude : 0}
-                type="text"
-                onBlur={(e) => {
-                  setValue("longitude", convertDMSToDD(e.target.value), {
-                    shouldDirty: true,
-                    shouldTouch: true,
-                  })
+                      latOnBlur(e)
+                    }}
+                  />
+                </FormGroupControl>
+                <FormGroupControl label="Longitude">
+                  <Input
+                    {...lonRegisterProps}
+                    placeholder="Insert longitude"
+                    defaultValue={longitude ? longitude : 0}
+                    type="text"
+                    onBlur={(e) => {
+                      setValue("longitude", convertDMSToDD(e.target.value), {
+                        shouldDirty: true,
+                        shouldTouch: true,
+                      })
 
-                  lonOnBlur(e)
-                }}
-              />
+                      lonOnBlur(e)
+                    }}
+                  />
+                </FormGroupControl>
+              </div>
 
-              <Textarea
-                {...register("description")}
-                placeholder={`Please provide a description of ${name}`}
-                rows={10}
-                defaultValue={description ? description : ""}
-              />
+              <FormGroupControl label="Description">
+                <Textarea
+                  {...register("description")}
+                  placeholder={`Please provide a description of ${name}`}
+                  rows={10}
+                  defaultValue={description ? description : ""}
+                />
+              </FormGroupControl>
 
               {(!!watch("latitude") || !!watch("longitude")) &&
                 !!lat &&

@@ -28,6 +28,7 @@ export async function PATCH(request: NextRequest, { params: { id } }: Props) {
   })
 
   revalidatePath(`/admin/cities/${id}`, 'page')
+  revalidatePath("/admin/locations")
 
   return NextResponse.json(null)
 }

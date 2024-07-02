@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(null)
 
   revalidatePath("/admin/cities")
+  revalidatePath("/admin/locations")
 
   return NextResponse.json(newCity)
 }

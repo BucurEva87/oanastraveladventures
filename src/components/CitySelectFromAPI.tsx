@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "./ui/form"
 
-export const CitySelect = ({ country, sector }: Props) => {
+export const CitySelectFromAPI = ({ country, sector }: Props) => {
   const { control, setValue } = useFormContext()
   const [options, setOptions] = useState<CityFromAPI[]>([])
   const [selectedOption, setSelectedOption] = useState<CityFromAPI | null>()
@@ -44,7 +44,7 @@ export const CitySelect = ({ country, sector }: Props) => {
 
   const loadCoords = async (city: string) => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/geodata/coord/${country}/${sector}/${city}`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/geodata/coord/city/${country}/${sector}/${city}`
     )
     const [lat, lon]: CoordFromAPI = await response.json()
 
@@ -88,7 +88,6 @@ export const CitySelect = ({ country, sector }: Props) => {
       render={({ field }) => {
         return (
           <FormItem>
-            <FormLabel>City</FormLabel>
             <FormControl>
               <AsyncSelect
                 {...field}
@@ -125,4 +124,4 @@ type Props = {
   sector: string
 }
 
-export default CitySelect
+export default CitySelectFromAPI
