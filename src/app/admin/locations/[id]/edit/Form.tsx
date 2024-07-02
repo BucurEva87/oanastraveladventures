@@ -17,6 +17,8 @@ import FormGroupControl from "@/components/FormGroupControl"
 import { LocationWithCity } from "@/types"
 import { updateLocationschema } from "@/schemas/locations"
 import { useEffect } from "react"
+import InformationContainer from "@/components/information/InformationContainer"
+import InformationRow from "@/components/information/InformationRow"
 
 const EditLocationPageForm = ({ location }: Props) => {
   const {
@@ -98,120 +100,115 @@ const EditLocationPageForm = ({ location }: Props) => {
     <>
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="container mx-auto p-4">
-            <div className="bg-white dark:bg-slate-900 shadow-lg rounded-lg p-6 flex flex-col items-center">
-              <h1 className="text-2xl font-semibold mb-4 text-center">
-                Let&apos;s edit {name}!
-              </h1>
-              <div className="flex items-center mb-4">
-                <span className="text-xl font-semibold">{country}</span>
-                <span className="ml-2">{countryFlag}</span>
-              </div>
-              <div className="mb-4">
-                <span className="text-gray-700">City: </span>
-                <span>{cityName}</span>
-              </div>
-              <div className="mb-4">
-                <span className="text-gray-700">Sector: </span>
-                <span>{sector}</span>
-              </div>
-
-              <div className="flex w-full gap-2">
-                <FormGroupControl label="Latitude">
-                  <Input
-                    {...latRegisterProps}
-                    placeholder="Insert latitude"
-                    defaultValue={latitude ?? undefined}
-                    type="text"
-                    onBlur={(e) => {
-                      setValue("latitude", convertDMSToDD(e.target.value), {
-                        shouldDirty: true,
-                        shouldTouch: true,
-                      })
-
-                      latOnBlur(e)
-                    }}
-                  />
-                </FormGroupControl>
-                <FormGroupControl label="Longitude">
-                  <Input
-                    {...lonRegisterProps}
-                    placeholder="Insert longitude"
-                    defaultValue={longitude ?? undefined}
-                    type="text"
-                    onBlur={(e) => {
-                      setValue("longitude", convertDMSToDD(e.target.value), {
-                        shouldDirty: true,
-                        shouldTouch: true,
-                      })
-
-                      lonOnBlur(e)
-                    }}
-                  />
-                </FormGroupControl>
-              </div>
-
-              <FormGroupControl label="Description">
-                <Textarea
-                  {...register("description")}
-                  placeholder={`Please provide a description of ${name}`}
-                  rows={10}
-                  defaultValue={description ?? undefined}
-                />
-              </FormGroupControl>
-
-              <FormGroupControl label="Type">
-                <Input
-                  {...register("type")}
-                  placeholder="Location type (ex: restaurant, museum)"
-                  defaultValue={type ?? undefined}
-                />
-              </FormGroupControl>
-
-              <FormGroupControl label="Website">
-                <Input
-                  {...register("website")}
-                  placeholder="Website of the location"
-                  defaultValue={website ?? undefined}
-                />
-              </FormGroupControl>
-
-              <FormGroupControl label="Entry Fee">
-                <Input
-                  {...register("entryFee", {
-                    valueAsNumber: true,
-                  })}
-                  type="number"
-                  step={0.01}
-                  placeholder="How much does visiting this location cost?"
-                  defaultValue={entryFee ?? undefined}
-                />
-              </FormGroupControl>
-
-              {!!watch("latitude") &&
-                !!watch("longitude") &&
-                !!lat &&
-                !!lon && (
-                  <div className="my-4">
-                    <Map
-                      center={[lat, lon]}
-                      markers={[
-                        {
-                          popup: { text: `City ${name}` },
-                          position: [lat, lon],
-                        },
-                      ]}
-                    />
-                  </div>
-                )}
-
-              {!!isValid && (
-                <div className="flex justify-center">
-                  <UpdateResourceButton resource={name} />
-                </div>
-              )}
+          <InformationContainer>
+            <h1 className="text-2xl font-semibold mb-4 text-center">
+              Let&apos;s edit {name}!
+            </h1>
+            <div className="flex items-center mb-4">
+              <span className="text-xl font-semibold">{country}</span>
+              <span className="ml-2">{countryFlag}</span>
             </div>
-          </div>
+            <InformationRow
+              label="City"
+              information={cityName}
+            />
+            <InformationRow
+              label="Sector"
+              information={sector}
+            />
+
+            <div className="flex w-full gap-2">
+              <FormGroupControl label="Latitude">
+                <Input
+                  {...latRegisterProps}
+                  placeholder="Insert latitude"
+                  defaultValue={latitude ?? undefined}
+                  type="text"
+                  onBlur={(e) => {
+                    setValue("latitude", convertDMSToDD(e.target.value), {
+                      shouldDirty: true,
+                      shouldTouch: true,
+                    })
+
+                    latOnBlur(e)
+                  }}
+                />
+              </FormGroupControl>
+              <FormGroupControl label="Longitude">
+                <Input
+                  {...lonRegisterProps}
+                  placeholder="Insert longitude"
+                  defaultValue={longitude ?? undefined}
+                  type="text"
+                  onBlur={(e) => {
+                    setValue("longitude", convertDMSToDD(e.target.value), {
+                      shouldDirty: true,
+                      shouldTouch: true,
+                    })
+
+                    lonOnBlur(e)
+                  }}
+                />
+              </FormGroupControl>
+            </div>
+
+            <FormGroupControl label="Description">
+              <Textarea
+                {...register("description")}
+                placeholder={`Please provide a description of ${name}`}
+                rows={10}
+                defaultValue={description ?? undefined}
+              />
+            </FormGroupControl>
+
+            <FormGroupControl label="Type">
+              <Input
+                {...register("type")}
+                placeholder="Location type (ex: restaurant, museum)"
+                defaultValue={type ?? undefined}
+              />
+            </FormGroupControl>
+
+            <FormGroupControl label="Website">
+              <Input
+                {...register("website")}
+                placeholder="Website of the location"
+                defaultValue={website ?? undefined}
+              />
+            </FormGroupControl>
+
+            <FormGroupControl label="Entry Fee">
+              <Input
+                {...register("entryFee", {
+                  valueAsNumber: true,
+                })}
+                type="number"
+                step={0.01}
+                placeholder="How much does visiting this location cost?"
+                defaultValue={entryFee ?? undefined}
+              />
+            </FormGroupControl>
+
+            {!!watch("latitude") && !!watch("longitude") && !!lat && !!lon && (
+              <div className="my-4">
+                <Map
+                  center={[lat, lon]}
+                  markers={[
+                    {
+                      popup: { text: `City ${name}` },
+                      position: [lat, lon],
+                    },
+                  ]}
+                />
+              </div>
+            )}
+
+            {!!isValid && (
+              <div className="flex justify-center">
+                <UpdateResourceButton resource={name} />
+              </div>
+            )}
+          </InformationContainer>
         </form>
       </Form>
       <DevTool control={control} />

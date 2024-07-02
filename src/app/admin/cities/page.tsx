@@ -20,12 +20,16 @@ const CitiesPage = async ({ searchParams }: Props) => {
             data={cities}
           />
         ) : (
-          <span>There are no cities</span>
+          <div className="text-center">
+            <span>There are no cities</span>
+          </div>
         )}
 
-        <Link href="/admin/cities/new">
-          {cities.length ? "Add another city" : "Perhaps add one?"}
-        </Link>
+        <div className="text-center">
+          <Link href="/admin/cities/new">
+            {cities.length ? "Add another city" : "Perhaps add one?"}
+          </Link>
+        </div>
       </div>
       <SystemNotification searchParams={searchParams} />
     </>

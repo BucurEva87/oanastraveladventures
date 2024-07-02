@@ -12,9 +12,11 @@ const NewLocationPage = async () => {
       <>
         <PageTitle title="No cities were found" />
 
-        <p>There is no trace of any city in your database.</p>
+        <div className="text-center">
+          <p>There is no trace of any city in your database.</p>
 
-        <Link href="/admin/cities/new">Perhaps add one?</Link>
+          <Link href="/admin/cities/new">Perhaps add one?</Link>
+        </div>
       </>
     )
 

@@ -1,5 +1,6 @@
 "use client"
 
+import { notify } from "@/components/Notification"
 import {
   Select,
   SelectContent,
@@ -8,7 +9,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Role } from "@prisma/client"
-import { toast } from "sonner"
 
 const roles = ["ADMIN", "MODERATOR", "USER"]
 
@@ -26,9 +26,17 @@ export default function SelectRole({ currentRole, id }: SelectRoleProps) {
           `The request could not be completed as it was most probably forged`
         )
 
-      toast.message("Role was successfully updated")
+      notify({
+        type: "success",
+        title: "Yahoo! You did it!",
+        description: "Role was successfully updated",
+      })
     } catch (error) {
-      toast.error(error as String)
+      notify({
+        type: "error",
+        title: "Oups! There was an error",
+        description: error as string,
+      })
     }
   }
 
