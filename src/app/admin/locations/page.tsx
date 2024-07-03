@@ -7,7 +7,7 @@ import { columns } from "./columns"
 import { City, Location } from "@prisma/client"
 
 const LocationsPage = async ({ searchParams }: Props) => {
-  const locations: LocationWithCity[] = await prisma.location
+  const locations = await prisma.location
     .findMany({
       select: {
         id: true,
@@ -25,15 +25,9 @@ const LocationsPage = async ({ searchParams }: Props) => {
       },
     })
     .then((locations) => {
-      return locations.map((location) => {
-        if (!location.city) {
-          throw new Error(
-            `Location with id ${location.id} has no associated city`
-          )
-        }
-
-        return location as LocationWithCity
-      })
+      return locations.filter(
+        (location) => location.city != null
+      ) as LocationWithCity[]
     })
 
   return (

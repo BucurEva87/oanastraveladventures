@@ -23,6 +23,7 @@ import { useEffect, useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
 import Select from "react-select"
 import { z } from "zod"
+import { Location } from "./page"
 
 const NewRoutePageForm = ({ locations }: Props) => {
   const form = useForm<z.infer<typeof createRouteSchema>>({
@@ -52,14 +53,8 @@ const NewRoutePageForm = ({ locations }: Props) => {
   const router = useRouter()
 
   const [selectedLocations, setSelectedLocations] = useState<Location[]>([])
-  const [available, setAvailable] = useState<BooleanSelectOption>({
-    label: "Available",
-    value: true,
-  })
-  const [circular, setCircular] = useState<BooleanSelectOption>({
-    label: "Yes",
-    value: true,
-  })
+  const [available, setAvailable] = useState(availableOptions[0])
+  const [circular, setCircular] = useState(circularOptions[0])
 
   useEffect(() => {
     setValue(
@@ -149,10 +144,7 @@ const NewRoutePageForm = ({ locations }: Props) => {
                       <FormControl>
                         <Select
                           {...field}
-                          options={[
-                            { value: true, label: "Available" },
-                            { value: false, label: "Unavailable" },
-                          ]}
+                          options={availableOptions}
                           value={available}
                           className="basic-single text-black"
                           classNamePrefix="select"
@@ -189,10 +181,7 @@ const NewRoutePageForm = ({ locations }: Props) => {
                       <FormControl>
                         <Select
                           {...field}
-                          options={[
-                            { value: true, label: "Yes" },
-                            { value: false, label: "No" },
-                          ]}
+                          options={circularOptions}
                           value={circular}
                           className="basic-single text-black"
                           classNamePrefix="select"
@@ -272,20 +261,17 @@ const NewRoutePageForm = ({ locations }: Props) => {
   )
 }
 
+const circularOptions = [
+  { value: true, label: "Yes" },
+  { value: false, label: "No" },
+]
+const availableOptions = [
+  { value: true, label: "Available" },
+  { value: false, label: "Unavailable" },
+]
+
 type Props = {
   locations: Location[]
-}
-
-type Location = {
-  id: string
-  name: string
-  latitude: number | null
-  longitude: number | null
-}
-
-type BooleanSelectOption = {
-  label: string
-  value: boolean
 }
 
 export default NewRoutePageForm

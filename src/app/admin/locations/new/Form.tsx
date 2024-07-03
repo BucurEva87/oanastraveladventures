@@ -54,10 +54,16 @@ const NewLocationPageForm = ({ cities }: Props) => {
   const { isValid } = formState
   const router = useRouter()
 
-  const [selectedCity, setSelectedCity] = useState<CityPartial>({
-    label: `${cities[0].name}, ${cities[0].sector} (${cities[0].sectorAuto}), ${cities[0].country} (${cities[0].countryCode}) ${cities[0].countryFlag}`,
-    value: cities[0].id,
+  const cityOptions = cities.map((city) => {
+    const { id, name, sector, sectorAuto, country, countryCode, countryFlag } =
+      city
+
+    return {
+      label: `${name}, ${sector} (${sectorAuto}), ${country} (${countryCode}) ${countryFlag}`,
+      value: id,
+    }
   })
+  const [selectedCity, setSelectedCity] = useState(cityOptions[0])
 
   const { onBlur: nameOnBlur, ...nameRegisterProps } = register("name")
   const lat = getValues("latitude")
@@ -137,22 +143,7 @@ const NewLocationPageForm = ({ cities }: Props) => {
                           isClearable={true}
                           isSearchable={true}
                           value={selectedCity}
-                          options={cities.map((city) => {
-                            const {
-                              id,
-                              name,
-                              sector,
-                              sectorAuto,
-                              country,
-                              countryCode,
-                              countryFlag,
-                            } = city
-
-                            return {
-                              label: `${name}, ${sector} (${sectorAuto}), ${country} (${countryCode}) ${countryFlag}`,
-                              value: id,
-                            }
-                          })}
+                          options={cityOptions}
                           onChange={(option) => {
                             if (!option) return
 
@@ -255,11 +246,6 @@ const NewLocationPageForm = ({ cities }: Props) => {
       <DevTool control={control} />
     </>
   )
-}
-
-type CityPartial = {
-  label: string
-  value: string
 }
 
 type Props = {

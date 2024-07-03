@@ -1,5 +1,3 @@
-import { City, Location, Route, RouteLocation } from "@prisma/client"
-
 export type CountryGivenFromAPI = {
   name: {
     common?: string
@@ -40,17 +38,3 @@ export type CoordFromAPI = [
   number | null,
   number | null
 ]
-
-export type LocationWithCity = Location & {
-  city: City
-}
-
-export type RouteWithLocations = Route & {
-  locations: (RouteLocation & {
-    location: Location
-  })[]
-}
-
-export type RouteWithLocationsWithCities = Route & {
-  locations: LocationWithCity[]
-}

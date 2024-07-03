@@ -1,7 +1,7 @@
 import prisma from "@/prisma/client"
-import { LocationWithCity } from "@/types"
 import { notFound } from "next/navigation"
 import EditLocationPageForm from "./Form"
+import { City, Location } from "@prisma/client"
 
 const EditLocationPage = async ({ params: { id } }: Props) => {
   const location = (await prisma.location.findUnique({
@@ -27,6 +27,10 @@ type Props = {
   params: {
     id: string
   }
+}
+
+export type LocationWithCity = Location & {
+  city: Pick<City, "name" | "sector" | "country" | "countryFlag">
 }
 
 export default EditLocationPage
