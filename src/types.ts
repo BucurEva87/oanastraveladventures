@@ -1,4 +1,4 @@
-import { City, Location } from "@prisma/client"
+import { City, Location, Route, RouteLocation } from "@prisma/client"
 
 export type CountryGivenFromAPI = {
   name: {
@@ -42,5 +42,15 @@ export type CoordFromAPI = [
 ]
 
 export type LocationWithCity = Location & {
-  city: Pick<City, 'id' | 'name' | 'country' | 'sector' | 'countryFlag'>
+  city: City
+}
+
+export type RouteWithLocations = Route & {
+  locations: (RouteLocation & {
+    location: Location
+  })[]
+}
+
+export type RouteWithLocationsWithCities = Route & {
+  locations: LocationWithCity[]
 }

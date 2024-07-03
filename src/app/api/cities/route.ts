@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
   })
 
   if (!newCity)
-      return NextResponse.json(null)
+    return NextResponse.json(null)
 
   revalidatePath("/admin/cities")
   revalidatePath("/admin/locations")

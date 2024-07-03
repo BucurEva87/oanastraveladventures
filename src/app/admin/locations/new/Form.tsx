@@ -1,7 +1,8 @@
 "use client"
 
 import SubmitResourceButton from "@/components/buttons/SubmitResourceButton"
-import FormGroupControl from "@/components/FormGroupControl"
+import FormContainer from "@/components/form/FormContainer"
+import FormGroupControl from "@/components/form/FormGroupControl"
 import { notify } from "@/components/Notification"
 import {
   Form,
@@ -116,137 +117,139 @@ const NewLocationPageForm = ({ cities }: Props) => {
     <>
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <h1 className="text-2xl font-semibold">
-            Let&apos;s add a new location!
-          </h1>
+          <FormContainer>
+            <h1 className="text-2xl font-semibold">
+              Let&apos;s add a new location!
+            </h1>
 
-          <FormGroupControl label="City">
-            <FormField
-              control={control}
-              name="cityId"
-              render={({ field }) => {
-                return (
-                  <FormItem>
-                    <FormControl>
-                      <Select
-                        {...field}
-                        className="basic-single text-black"
-                        classNamePrefix="select"
-                        isClearable={true}
-                        isSearchable={true}
-                        value={selectedCity}
-                        options={cities.map((city) => {
-                          const {
-                            id,
-                            name,
-                            sector,
-                            sectorAuto,
-                            country,
-                            countryCode,
-                            countryFlag,
-                          } = city
+            <FormGroupControl label="City">
+              <FormField
+                control={control}
+                name="cityId"
+                render={({ field }) => {
+                  return (
+                    <FormItem>
+                      <FormControl>
+                        <Select
+                          {...field}
+                          className="basic-single text-black"
+                          classNamePrefix="select"
+                          isClearable={true}
+                          isSearchable={true}
+                          value={selectedCity}
+                          options={cities.map((city) => {
+                            const {
+                              id,
+                              name,
+                              sector,
+                              sectorAuto,
+                              country,
+                              countryCode,
+                              countryFlag,
+                            } = city
 
-                          return {
-                            label: `${name}, ${sector} (${sectorAuto}), ${country} (${countryCode}) ${countryFlag}`,
-                            value: id,
-                          }
-                        })}
-                        onChange={(option) => {
-                          if (!option) return
+                            return {
+                              label: `${name}, ${sector} (${sectorAuto}), ${country} (${countryCode}) ${countryFlag}`,
+                              value: id,
+                            }
+                          })}
+                          onChange={(option) => {
+                            if (!option) return
 
-                          field.onChange(option.value)
-                          setSelectedCity(option)
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )
-              }}
-            />
-          </FormGroupControl>
+                            field.onChange(option.value)
+                            setSelectedCity(option)
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )
+                }}
+              />
+            </FormGroupControl>
 
-          <FormGroupControl label="Name">
-            <Input
-              {...nameRegisterProps}
-              placeholder="Please insert the name of the location"
-              type="text"
-              onBlur={(e) => {
-                nameOnBlur(e)
-                loadCoords(e.target.value)
-              }}
-            />
-          </FormGroupControl>
-
-          <FormGroupControl label="Type">
-            <Input
-              {...register("type")}
-              placeholder="Location type (ex: restaurant, museum)"
-            />
-          </FormGroupControl>
-
-          <FormGroupControl label="Description">
-            <Textarea
-              {...register("description")}
-              placeholder={`Please provide a description of ${watch("name")}`}
-              rows={8}
-            />
-          </FormGroupControl>
-
-          <FormGroupControl label="Website">
-            <Input
-              {...register("website")}
-              placeholder="Website of the location"
-            />
-          </FormGroupControl>
-
-          <FormGroupControl label="Entry Fee">
-            <Input
-              {...register("entryFee", {
-                valueAsNumber: true,
-              })}
-              type="number"
-              step={0.01}
-              placeholder="How much does visiting this location cost?"
-            />
-          </FormGroupControl>
-
-          {watch("name") && (
-            <>
+            <FormGroupControl label="Name">
               <Input
-                {...register("latitude", {
+                {...nameRegisterProps}
+                placeholder="Please insert the name of the location"
+                type="text"
+                onBlur={(e) => {
+                  nameOnBlur(e)
+                  loadCoords(e.target.value)
+                }}
+              />
+            </FormGroupControl>
+
+            <FormGroupControl label="Type">
+              <Input
+                {...register("type")}
+                placeholder="Location type (ex: restaurant, museum)"
+              />
+            </FormGroupControl>
+
+            <FormGroupControl label="Description">
+              <Textarea
+                {...register("description")}
+                placeholder={`Please provide a description of ${watch("name")}`}
+                rows={8}
+              />
+            </FormGroupControl>
+
+            <FormGroupControl label="Website">
+              <Input
+                {...register("website")}
+                placeholder="Website of the location"
+              />
+            </FormGroupControl>
+
+            <FormGroupControl label="Entry Fee">
+              <Input
+                {...register("entryFee", {
                   valueAsNumber: true,
                 })}
-                type="hidden"
+                type="number"
+                step={0.01}
+                placeholder="How much does visiting this location cost?"
               />
-              <Input
-                {...register("longitude", {
-                  valueAsNumber: true,
-                })}
-                type="hidden"
-              />
-            </>
-          )}
+            </FormGroupControl>
 
-          {!!watch("latitude") && !!lat && !!lon && (
-            <div className="flex justify-center mt-2">
-              <Map
-                center={[lat, lon]}
-                markers={[
-                  {
-                    popup: { text: getValues("name") },
-                    position: [lat, lon],
-                  },
-                ]}
-              />
-            </div>
-          )}
+            {watch("name") && (
+              <>
+                <Input
+                  {...register("latitude", {
+                    valueAsNumber: true,
+                  })}
+                  type="hidden"
+                />
+                <Input
+                  {...register("longitude", {
+                    valueAsNumber: true,
+                  })}
+                  type="hidden"
+                />
+              </>
+            )}
 
-          {!!isValid && (
-            <div className="flex justify-center">
-              <SubmitResourceButton resource={`Add ${getValues("name")}`} />
-            </div>
-          )}
+            {!!watch("latitude") && !!lat && !!lon && (
+              <div className="flex justify-center mt-2">
+                <Map
+                  center={[lat, lon]}
+                  markers={[
+                    {
+                      popup: { text: getValues("name") },
+                      position: [lat, lon],
+                    },
+                  ]}
+                />
+              </div>
+            )}
+
+            {!!isValid && (
+              <div className="flex justify-center">
+                <SubmitResourceButton resource={`Add ${getValues("name")}`} />
+              </div>
+            )}
+          </FormContainer>
         </form>
       </Form>
       <DevTool control={control} />

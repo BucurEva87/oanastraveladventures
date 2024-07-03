@@ -1,8 +1,8 @@
 "use client"
 
-import { LocationWithCity } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
 import Link from "next/link"
+import { LocationWithCity } from "./page"
 
 export const columns: ColumnDef<LocationWithCity>[] = [
   {

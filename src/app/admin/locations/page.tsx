@@ -2,14 +2,17 @@ import DataTable from "@/components/DataTable"
 import { SystemNotification } from "@/components/Notification"
 import PageTitle from "@/components/PageTitle"
 import prisma from "@/prisma/client"
-import { LocationWithCity } from "@/types"
 import Link from "next/link"
 import { columns } from "./columns"
+import { City, Location } from "@prisma/client"
 
 const LocationsPage = async ({ searchParams }: Props) => {
   const locations: LocationWithCity[] = await prisma.location
     .findMany({
-      include: {
+      select: {
+        id: true,
+        name: true,
+        type: true,
         city: {
           select: {
             id: true,
@@ -64,6 +67,10 @@ type Props = {
   searchParams?: {
     [key: string]: string | undefined
   }
+}
+
+export type LocationWithCity = Pick<Location, "id" | "name" | "type"> & {
+  city: Pick<City, "id" | "name" | "sector" | "country" | "countryFlag">
 }
 
 export default LocationsPage

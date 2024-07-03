@@ -1,8 +1,8 @@
 "use client"
 
-import { City } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
 import Link from "next/link"
+import { City } from "./page"
 
 export const columns: ColumnDef<City>[] = [
   {
@@ -12,7 +12,7 @@ export const columns: ColumnDef<City>[] = [
       return (
         <span>
           <Link href={`/admin/cities/${row.original.id}`}>
-            {row.getValue("name")}
+            {row.original.name}
           </Link>
         </span>
       )
@@ -23,7 +23,7 @@ export const columns: ColumnDef<City>[] = [
     header: "Country",
     cell: ({ row }) => {
       return (
-        <span>{`${row.getValue("country")} ${row.original.countryFlag}`}</span>
+        <span>{`${row.original.country} ${row.original.countryFlag}`}</span>
       )
     },
   },
@@ -32,7 +32,7 @@ export const columns: ColumnDef<City>[] = [
     header: "Sector",
     cell: ({ row }) => {
       return (
-        <span>{`${row.getValue("sector")} (${row.original.sectorAuto})`}</span>
+        <span>{`${row.original.sectorAuto} (${row.original.sectorAuto})`}</span>
       )
     },
   },

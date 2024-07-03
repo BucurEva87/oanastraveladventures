@@ -3,7 +3,8 @@
 import SubmitResourceButton from "@/components/buttons/SubmitResourceButton"
 import CitySelectFromAPI from "@/components/CitySelectFromAPI"
 import CountrySelectFromAPI from "@/components/CountrySelectFromAPI"
-import FormGroupControl from "@/components/FormGroupControl"
+import FormContainer from "@/components/form/FormContainer"
+import FormGroupControl from "@/components/form/FormGroupControl"
 import { notify } from "@/components/Notification"
 import SectorSelectFromAPI from "@/components/SectorSelectFromAPI"
 import { Form } from "@/components/ui/form"
@@ -68,91 +69,93 @@ const NewCityPageForm = () => {
       <Form {...form}>
         <FormProvider {...form}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <h1 className="text-2xl font-semibold">
-              Let&apos;s add a new city!
-            </h1>
+            <FormContainer>
+              <h1 className="text-2xl font-semibold">
+                Let&apos;s add a new city!
+              </h1>
 
-            <FormGroupControl label="Country">
-              <CountrySelectFromAPI />
-            </FormGroupControl>
+              <FormGroupControl label="Country">
+                <CountrySelectFromAPI />
+              </FormGroupControl>
 
-            <Input
-              {...register("countryFlag")}
-              type="hidden"
-            />
-            <Input
-              {...register("countryCode")}
-              type="hidden"
-            />
+              <Input
+                {...register("countryFlag")}
+                type="hidden"
+              />
+              <Input
+                {...register("countryCode")}
+                type="hidden"
+              />
 
-            {watch("country") && (
-              <>
-                <FormGroupControl label="Sector">
-                  <SectorSelectFromAPI country={watch("country")} />
-                </FormGroupControl>
+              {watch("country") && (
+                <>
+                  <FormGroupControl label="Sector">
+                    <SectorSelectFromAPI country={watch("country")} />
+                  </FormGroupControl>
 
-                <Input
-                  {...register("sectorAuto")}
-                  type="hidden"
-                />
-              </>
-            )}
+                  <Input
+                    {...register("sectorAuto")}
+                    type="hidden"
+                  />
+                </>
+              )}
 
-            {watch("sector") && (
-              <>
-                <FormGroupControl label="City">
-                  <CitySelectFromAPI
-                    country={watch("country")}
-                    sector={watch("sectorAuto")}
+              {watch("sector") && (
+                <>
+                  <FormGroupControl label="City">
+                    <CitySelectFromAPI
+                      country={watch("country")}
+                      sector={watch("sectorAuto")}
+                    />
+                  </FormGroupControl>
+
+                  <Input
+                    {...register("latitude", {
+                      valueAsNumber: true,
+                    })}
+                    type="hidden"
+                  />
+                  <Input
+                    {...register("longitude", {
+                      valueAsNumber: true,
+                    })}
+                    type="hidden"
+                  />
+                </>
+              )}
+
+              {watch("name") && (
+                <FormGroupControl label="Description">
+                  <Textarea
+                    {...register("description")}
+                    placeholder={`Please provide a description of ${watch(
+                      "name"
+                    )}`}
+                    rows={8}
                   />
                 </FormGroupControl>
+              )}
 
-                <Input
-                  {...register("latitude", {
-                    valueAsNumber: true,
-                  })}
-                  type="hidden"
-                />
-                <Input
-                  {...register("longitude", {
-                    valueAsNumber: true,
-                  })}
-                  type="hidden"
-                />
-              </>
-            )}
+              {!!watch("latitude") && !!lat && !!lon && (
+                <div className="flex justify-center mt-2">
+                  <Map
+                    center={[lat, lon]}
+                    markers={[
+                      {
+                        popup: { text: `City ${getValues("name")}` },
+                        position: [lat, lon],
+                      },
+                    ]}
+                  />
+                </div>
+              )}
 
-            {watch("name") && (
-              <FormGroupControl label="Description">
-                <Textarea
-                  {...register("description")}
-                  placeholder={`Please provide a description of ${watch(
-                    "name"
-                  )}`}
-                  rows={8}
-                />
-              </FormGroupControl>
-            )}
-
-            {!!watch("latitude") && !!lat && !!lon && (
-              <div className="flex justify-center mt-2">
-                <Map
-                  center={[lat, lon]}
-                  markers={[
-                    {
-                      popup: { text: `City ${getValues("name")}` },
-                      position: [lat, lon],
-                    },
-                  ]}
-                />
-              </div>
-            )}
-
-            {!!isValid && (
-              <div className="flex justify-center">
-                <SubmitResourceButton resource={`Add ${getValues("name")}`} />
-              </div>
-            )}
+              {!!isValid && (
+                <div className="flex justify-center">
+                  <SubmitResourceButton resource={`Add ${getValues("name")}`} />
+                </div>
+              )}
+            </FormContainer>
           </form>
         </FormProvider>
       </Form>

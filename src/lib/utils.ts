@@ -61,3 +61,57 @@ export const convertDMSToDD = (dms: string) => {
 
 	return dd
 }
+
+export const calculateDistanceBetweenLocations = (
+	lat1: number,
+	lon1: number,
+	lat2: number,
+	lon2: number
+) => {
+	function toRadians(degrees: number) {
+    return degrees * (Math.PI / 180);
+  }
+
+	const R = 6371
+	const dLat = toRadians(lat2 - lat1)
+	const dLon = toRadians(lon2 - lon1)
+	const a =
+		Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+		Math.cos(toRadians(lat1)) *
+			Math.cos(toRadians(lat2)) *
+			Math.sin(dLon / 2) *
+			Math.sin(dLon / 2)
+	const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+	const distance = R * c
+
+	return distance
+}
+
+export const calculateRouteLength = (locations: { latitude: number | null, longitude: number | null }[], circular: boolean) => {
+	if (locations.length < 2) return 0
+
+	let length = 0
+
+	if (circular) locations = [...locations, locations[0]]
+
+	for (let i = 0; i < locations.length - 1; i++) {
+		const [lat1, lon1] = [locations[i].latitude, locations[i].longitude]
+		const [lat2, lon2] = [
+			locations[i + 1].latitude,
+			locations[i + 1].longitude,
+		]
+
+		if (!lat1 || !lon1 || !lat2 || !lon2) continue
+
+		const distance = calculateDistanceBetweenLocations(
+			lat1,
+			lon1,
+			lat2,
+			lon2
+		)
+
+		length += distance
+	}
+
+	return Number(length.toFixed(2))
+}

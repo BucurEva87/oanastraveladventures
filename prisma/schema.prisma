@@ -95,7 +95,7 @@ model Location {
   longitude   Float?
 
   city   City?           @relation(fields: [cityId], references: [id], onDelete: Cascade)
-  offers RouteLocation[]
+  route  RouteLocation[]
   images Image[]
 }
 
@@ -106,7 +106,7 @@ model Route {
   description String? @db.Text
   prices      String  @db.VarChar(255)
   circular    Boolean @default(false)
-  length      Int
+  length      Float
 
   locations RouteLocation[]
   images    Image[]

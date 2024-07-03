@@ -13,12 +13,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import FormGroupControl from "@/components/FormGroupControl"
+import FormGroupControl from "@/components/form/FormGroupControl"
 import { LocationWithCity } from "@/types"
 import { updateLocationschema } from "@/schemas/locations"
 import { useEffect } from "react"
 import InformationContainer from "@/components/information/InformationContainer"
 import InformationRow from "@/components/information/InformationRow"
+import FormContainer from "@/components/form/FormContainer"
 
 const EditLocationPageForm = ({ location }: Props) => {
   const {
@@ -116,7 +117,9 @@ const EditLocationPageForm = ({ location }: Props) => {
               label="Sector"
               information={sector}
             />
+          </InformationContainer>
 
+          <FormContainer>
             <div className="flex w-full gap-2">
               <FormGroupControl label="Latitude">
                 <Input
@@ -208,7 +211,7 @@ const EditLocationPageForm = ({ location }: Props) => {
                 <UpdateResourceButton resource={name} />
               </div>
             )}
-          </InformationContainer>
+          </FormContainer>
         </form>
       </Form>
       <DevTool control={control} />

@@ -14,10 +14,11 @@ import { City } from "@prisma/client"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import FormGroupControl from "@/components/FormGroupControl"
+import FormGroupControl from "@/components/form/FormGroupControl"
 import { useEffect } from "react"
 import InformationContainer from "@/components/information/InformationContainer"
 import InformationRow from "@/components/information/InformationRow"
+import FormContainer from "@/components/form/FormContainer"
 
 const EditCityPageForm = ({ city }: Props) => {
   const {
@@ -114,7 +115,9 @@ const EditCityPageForm = ({ city }: Props) => {
               label="Sector Auto"
               information={sectorAuto}
             />
+          </InformationContainer>
 
+          <FormContainer>
             <div className="flex w-full gap-2">
               <FormGroupControl label="Latitude">
                 <Input
@@ -178,7 +181,7 @@ const EditCityPageForm = ({ city }: Props) => {
                 <UpdateResourceButton resource={name} />
               </div>
             )}
-          </InformationContainer>
+          </FormContainer>
         </form>
       </Form>
       <DevTool control={control} />
