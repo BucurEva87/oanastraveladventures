@@ -1,6 +1,6 @@
 "use client"
 
-import SubmitResourceButton from "@/components/buttons/SubmitResourceButton"
+import UpdateResourceButton from "@/components/buttons/UpdateResourceButton"
 import FormContainer from "@/components/form/FormContainer"
 import FormGroupControl from "@/components/form/FormGroupControl"
 import { notify } from "@/components/Notification"
@@ -13,48 +13,66 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { calculateRouteLength } from "@/lib/utils"
 import { createRouteSchema } from "@/schemas/routes"
 import { DevTool } from "@hookform/devtools"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Location } from "@prisma/client"
 import { Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useFieldArray, useForm } from "react-hook-form"
 import Select from "react-select"
 import { z } from "zod"
-import { Location } from "./page"
+import { RouteWithLocations } from "./page"
+import { calculateRouteLength } from "@/lib/utils"
 
-const NewRoutePageForm = ({ locations }: Props) => {
+const EditRoutePageForm = ({ route }: Props) => {
+  const {
+    id,
+    name,
+    available: routeAvailable,
+    description,
+    prices,
+    circular: routeCircular,
+    length,
+    locations,
+  } = route
+
   const form = useForm<z.infer<typeof createRouteSchema>>({
     resolver: zodResolver(createRouteSchema),
     defaultValues: {
-      available: true,
-      circular: true,
-      length: 0,
-      prices: [{ people: undefined, price: undefined }],
+      name,
+      available: routeAvailable,
+      description,
+      prices: JSON.parse(prices),
+      circular: routeCircular,
+      length,
     },
   })
   const {
-    register,
     control,
-    getValues,
-    setValue,
-    handleSubmit,
+    register,
     watch,
-    formState,
+    setValue,
+    getValues,
+    handleSubmit,
+    formState: { isValid },
   } = form
   const { fields, append, remove } = useFieldArray({
     name: "prices",
     control,
   })
-
-  const { isValid } = formState
   const router = useRouter()
 
-  const [selectedLocations, setSelectedLocations] = useState<Location[]>([])
-  const [available, setAvailable] = useState(availableOptions[0])
-  const [circular, setCircular] = useState(circularOptions[0])
+  const [selectedLocations, setSelectedLocations] = useState<Location[]>(
+    locations.map((item) => item.location as Location)
+  )
+  const [available, setAvailable] = useState(
+    availableOptions.find((item) => item.value === routeAvailable)
+  )
+  const [circular, setCircular] = useState(
+    circularOptions.find((item) => item.value === routeCircular)
+  )
 
   useEffect(() => {
     setValue(
@@ -69,9 +87,9 @@ const NewRoutePageForm = ({ locations }: Props) => {
 
   const onSubmit = async (values: z.infer<typeof createRouteSchema>) => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/routes`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/routes/${id}`,
       {
-        method: "POST",
+        method: "PATCH",
         body: JSON.stringify({
           ...values,
           prices: JSON.stringify(values.prices),
@@ -92,7 +110,7 @@ const NewRoutePageForm = ({ locations }: Props) => {
     notify({
       type: "success",
       title: "Yahoo! You did it!",
-      description: `Route ${values.name} was created successfully`,
+      description: `${values.name} was updated successfully`,
     })
     router.push("/admin/routes")
   }
@@ -102,15 +120,24 @@ const NewRoutePageForm = ({ locations }: Props) => {
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormContainer>
-            <h1 className="text-2xl font-semibold">
-              Let&apos;s add a new route!
+            <h1 className="text-2xl font-semibold mb-4 text-center">
+              Let&apos;s edit {name}!
             </h1>
+
+            <FormGroupControl label="Name">
+              <Input
+                {...register("name")}
+                placeholder="Please insert the name of the route"
+                type="text"
+                defaultValue={name}
+              />
+            </FormGroupControl>
 
             <FormGroupControl label="Locations">
               <Select
                 isMulti
-                defaultValue={[]}
-                options={locations}
+                defaultValue={selectedLocations}
+                options={locations.map((item) => item.location as Location)}
                 getOptionLabel={(option: Location) => option.name}
                 getOptionValue={(option: Location) => option.id}
                 className="basic-multi-select text-black"
@@ -126,13 +153,13 @@ const NewRoutePageForm = ({ locations }: Props) => {
               {watch("length")} kilometers
             </FormGroupControl>
 
-            <FormGroupControl label="Name">
-              <Input
-                {...register("name")}
-                placeholder="Please insert the name of the route"
-                type="text"
-              />
-            </FormGroupControl>
+            <Input
+              {...register("length", {
+                valueAsNumber: true,
+              })}
+              defaultValue={length}
+              type="hidden"
+            />
 
             <FormGroupControl label="Available">
               <FormField
@@ -144,6 +171,7 @@ const NewRoutePageForm = ({ locations }: Props) => {
                       <FormControl>
                         <Select
                           {...field}
+                          defaultValue={available}
                           options={availableOptions}
                           value={available}
                           className="basic-single text-black"
@@ -168,6 +196,7 @@ const NewRoutePageForm = ({ locations }: Props) => {
                 {...register("description")}
                 placeholder={`Please provide a description of ${watch("name")}`}
                 rows={8}
+                defaultValue={description ?? undefined}
               />
             </FormGroupControl>
 
@@ -183,6 +212,7 @@ const NewRoutePageForm = ({ locations }: Props) => {
                           {...field}
                           options={circularOptions}
                           value={circular}
+                          defaultValue={circular}
                           className="basic-single text-black"
                           classNamePrefix="select"
                           onChange={(option) => {
@@ -199,13 +229,6 @@ const NewRoutePageForm = ({ locations }: Props) => {
                 }}
               />
             </FormGroupControl>
-
-            <Input
-              {...register("length", {
-                valueAsNumber: true,
-              })}
-              type="hidden"
-            />
 
             <div>
               {fields.map((field, index) => {
@@ -250,7 +273,7 @@ const NewRoutePageForm = ({ locations }: Props) => {
 
             {!!isValid && (
               <div className="flex justify-center">
-                <SubmitResourceButton resource={`Add ${getValues("name")}`} />
+                <UpdateResourceButton resource={name} />
               </div>
             )}
           </FormContainer>
@@ -271,7 +294,7 @@ const availableOptions = [
 ]
 
 type Props = {
-  locations: Location[]
+  route: RouteWithLocations
 }
 
-export default NewRoutePageForm
+export default EditRoutePageForm

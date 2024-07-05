@@ -4,7 +4,7 @@ import { Route } from "@prisma/client"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
-  const body: Omit<Route, 'id'> & { locationsIds: string[] } = await request.json()
+  const body: RequestBody = await request.json()
 
   if (!body.locationsIds.length)
     return NextResponse.json(
@@ -37,3 +37,5 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json(null)
 }
+
+type RequestBody = Omit<Route, 'id'> & { locationsIds: string[] }

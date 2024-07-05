@@ -1,10 +1,9 @@
-import DataTable from "@/components/DataTable"
 import { SystemNotification } from "@/components/Notification"
 import PageTitle from "@/components/PageTitle"
 import prisma from "@/prisma/client"
-import Link from "next/link"
-import { columns } from "./columns"
 import { Location, Route, RouteLocation } from "@prisma/client"
+import Link from "next/link"
+import RoutesPageTable from "./Table"
 
 const RoutesPage = async ({ searchParams }: Props) => {
   const routes: RouteWithLocations[] = await prisma.route.findMany({
@@ -49,10 +48,7 @@ const RoutesPage = async ({ searchParams }: Props) => {
         <PageTitle title="Routes" />
 
         {routes.length ? (
-          <DataTable
-            columns={columns}
-            data={routes}
-          />
+          <RoutesPageTable routes={routes} />
         ) : (
           <div className="text-center">
             <span>There are no routes</span>

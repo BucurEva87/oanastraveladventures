@@ -6,6 +6,7 @@ import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet"
 import MarkerIcon from "../../leaflet/images/marker.png"
 import "../../leaflet/map.css"
 import MapRecenterAutomatically from "./MapRecenterAutomatically"
+import RoutingMachine from "./RoutingMachine"
 
 const Map = (props: Props) => {
   return (
@@ -41,6 +42,13 @@ const Map = (props: Props) => {
             <Popup>{marker.popup.text}</Popup>
           </Marker>
         ))}
+        {/* <RoutingMachine
+          waypoints={[
+            [46.21997445, 24.79256226858187],
+            [46.2196497, 24.79347855254653],
+            [46.21947230000001, 24.79276585337529],
+          ]}
+        /> */}
         <MapRecenterAutomatically center={props.center} />
       </MapContainer>
     </div>

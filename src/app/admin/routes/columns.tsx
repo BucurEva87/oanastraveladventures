@@ -23,7 +23,7 @@ export const columns: ColumnDef<RouteWithLocations>[] = [
     header: "Locations",
     cell: ({ row }) => {
       return (
-        <span className="flex gap-3">
+        <span className="flex gap-3 flex-col md:flex-row">
           {row.original.locations.map((item) => {
             const { id, name } = item.location
 

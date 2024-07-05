@@ -132,7 +132,7 @@ model RouteLocation {
   position   Int
 
   location Location @relation(fields: [locationId], references: [id])
-  route    Route    @relation(fields: [routeId], references: [id])
+  route    Route    @relation(fields: [routeId], references: [id], onDelete: Cascade)
 
   @@unique([locationId, routeId])
 }
