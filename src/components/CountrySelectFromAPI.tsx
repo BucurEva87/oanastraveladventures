@@ -1,18 +1,13 @@
 "use client"
 
 import AsyncSelect from "react-select/async"
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "./ui/form"
+import { FormControl, FormField, FormItem, FormMessage } from "./ui/form"
 import { useFormContext } from "react-hook-form"
 import { CountryFromAPI } from "@/types"
 import { SingleValue } from "react-select"
 import { useState } from "react"
 import { toast } from "sonner"
+import { noDia } from "@/lib/utils"
 
 export const CountrySelectFromAPI = () => {
   const { control, setValue } = useFormContext()
@@ -38,7 +33,7 @@ export const CountrySelectFromAPI = () => {
     }
 
     return options.filter((option) =>
-      option.name.toLowerCase().includes(inputValue.toLowerCase())
+      noDia(option.name.toLowerCase()).includes(noDia(inputValue.toLowerCase()))
     )
   }
 

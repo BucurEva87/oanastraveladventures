@@ -6,13 +6,8 @@ import { useFormContext } from "react-hook-form"
 import { SingleValue } from "react-select"
 import AsyncSelect from "react-select/async"
 import { toast } from "sonner"
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "./ui/form"
+import { FormControl, FormField, FormItem, FormMessage } from "./ui/form"
+import { noDia } from "@/lib/utils"
 
 export const SectorSelectFromAPI = ({ country }: Props) => {
   const { control, setValue } = useFormContext()
@@ -38,7 +33,7 @@ export const SectorSelectFromAPI = ({ country }: Props) => {
     }
 
     return options.filter((option) =>
-      option.name.toLowerCase().includes(inputValue.toLowerCase())
+      noDia(option.name.toLowerCase()).includes(noDia(inputValue.toLowerCase()))
     )
   }
 

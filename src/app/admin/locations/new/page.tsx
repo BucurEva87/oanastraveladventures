@@ -3,6 +3,8 @@ import prisma from "@/prisma/client"
 import Link from "next/link"
 import NewLocationPageForm from "./Form"
 
+export const dynamic = "force-dynamic"
+
 const NewLocationPage = async () => {
   const cities = await prisma.city.findMany()
 

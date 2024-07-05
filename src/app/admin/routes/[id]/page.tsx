@@ -3,9 +3,10 @@ import EditResourceButton from "@/components/buttons/EditResourceButton"
 import InformationContainer from "@/components/information/InformationContainer"
 import InformationRow from "@/components/information/InformationRow"
 import prisma from "@/prisma/client"
-import dynamic from "next/dynamic"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+
+export const dynamic = "force-dynamic"
 
 const RoutePage = async ({ params: { id } }: Props) => {
   const route = await prisma.route.findUnique({
