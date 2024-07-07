@@ -4,8 +4,6 @@ import Link from "next/link"
 import NewRoutePageForm from "./Form"
 import { Location as SchemaLocation } from "@prisma/client"
 
-export const dynamic = "force-dynamic"
-
 const NewRoutePage = async () => {
   const locations: Location[] = await prisma.location.findMany({
     select: {

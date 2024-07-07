@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "migrate:dev": "dotenv -e .env.development -- npx prisma migrate dev",
-    "migrate:deploy": "dotenv -e .env -- npx prisma migrate deploy"
+    "migrate:deploy": "dotenv -e .env -- npx prisma migrate deploy",
+    "email": "email dev"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.6.0",
@@ -22,6 +23,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tooltip": "^1.1.1",
     "@radix-ui/themes": "^3.1.1",
+    "@react-email/components": "0.0.21",
     "@react-hook/window-size": "^3.1.1",
     "@react-leaflet/core": "^2.1.0",
     "@tanstack/react-table": "^8.17.3",
@@ -42,6 +44,7 @@
     "prisma": "^5.16.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-email": "2.1.5",
     "react-hook-form": "^7.52.0",
     "react-leaflet": "^4.2.1",
     "react-select": "^5.8.0",

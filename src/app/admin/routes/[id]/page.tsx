@@ -6,8 +6,6 @@ import prisma from "@/prisma/client"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-export const dynamic = "force-dynamic"
-
 const RoutePage = async ({ params: { id } }: Props) => {
   const route = await prisma.route.findUnique({
     where: { id },

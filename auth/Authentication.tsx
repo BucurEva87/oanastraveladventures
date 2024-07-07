@@ -18,6 +18,8 @@ import Link from "next/link"
 const Authentication = () => {
   const { data: session } = useSession()
 
+  console.log(session)
+
   return (
     <>
       {session ? (
@@ -70,7 +72,7 @@ const Dropdown = ({
             src={user?.image || undefined}
             alt={`${user?.name}'s profile image`}
           />
-          <AvatarFallback>
+          <AvatarFallback className="text-black">
             {user?.name
               ?.split(" ")
               .reduce((acc, val) => acc + val.substring(0, 1), "")

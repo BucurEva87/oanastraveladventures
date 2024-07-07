@@ -54,19 +54,25 @@ const authOptions: NextAuthOptions = {
       }
     })
   ],
-  // callbacks: {
-  //   jwt: async ({ token, user, trigger, session }) => {
-  //     if (trigger === 'update')
-  //       return { ...token, ...session.user }
+  callbacks: {
+    jwt: async ({ token, user, trigger, session }) => {
+      // console.log({
+      //   token,
+      //   user,
+      //   trigger,
+      //   session
+      // })
+      if (trigger === 'update')
+        return { ...token, ...session.user }
 
-  //     return { ...token, ...user }
-  //   },
-  //   session: async ({ session, token }) => {
-  //     session.user = token.user!
+      return { ...token, ...user }
+    },
+    session: async ({ session, token }) => {
+      session.user = token.user!
 
-  //     return session
-  //   }
-  // },
+      return session
+    }
+  },
   session: {
     strategy: 'jwt'
   }

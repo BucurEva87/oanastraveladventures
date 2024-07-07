@@ -3,6 +3,8 @@ import SideNavbar from "./_components/SideNavbar"
 import { ThemeProvider } from "@/components/ThemeProvider"
 import ThemeToggle from "./_components/ThemeToggle"
 
+export const dynamic = "force-dynamic"
+
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <section className="flex">
