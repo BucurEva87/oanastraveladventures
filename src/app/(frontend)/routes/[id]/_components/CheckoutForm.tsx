@@ -35,7 +35,9 @@ const CheckoutForm = ({ route, clientSecret }: Props) => {
           <Image src={route.imagePath} fill alt={route.name} />
         </div> */}
         <div>
-          <div className="text-lg">{formatCurrency(route.priceInCents)}</div>
+          <div className="text-lg">
+            {formatCurrency(route.priceInCents / 100)}
+          </div>
           <h1 className="text-2xl font-bold">{route.name}</h1>
           <div className="lime-clamp-3 text-muted-foreground">
             {route.description}
@@ -47,7 +49,7 @@ const CheckoutForm = ({ route, clientSecret }: Props) => {
         stripe={stripePromise}
       >
         <Form
-          price={route.priceInCents}
+          priceInCents={route.priceInCents}
           productId={route.id}
         />
       </Elements>
@@ -55,7 +57,7 @@ const CheckoutForm = ({ route, clientSecret }: Props) => {
   )
 }
 
-function Form({ price, productId }: FormProps) {
+function Form({ priceInCents, productId }: FormProps) {
   const stripe = useStripe()
   const elements = useElements()
   const [isLoading, setIsLoading] = useState(false)
@@ -121,7 +123,7 @@ function Form({ price, productId }: FormProps) {
           >
             {isLoading
               ? "Purchasing..."
-              : `Purchase - ${formatCurrency(price)}`}
+              : `Purchase - ${formatCurrency(priceInCents / 100)}`}
           </Button>
         </CardFooter>
       </Card>
@@ -135,7 +137,7 @@ type Props = {
 }
 
 type FormProps = {
-  price: number
+  priceInCents: number
   productId: string
 }
 

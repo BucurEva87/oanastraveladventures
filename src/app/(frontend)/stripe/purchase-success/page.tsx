@@ -22,8 +22,6 @@ export default async function SuccessPage({
 
   const isSuccess = paymentIntent.status === "succeeded"
 
-  const price = JSON.parse(route.prices)[0].price
-
   return (
     <div className="max-w-5xl w-full mx-auto space-y-8">
       <h1 className="text-4xl font-bold">
@@ -34,7 +32,9 @@ export default async function SuccessPage({
       <Image src={route.imagePath} fill alt={route.name} />
     </div> */}
         <div>
-          <div className="text-lg">{formatCurrency(price)}</div>
+          <div className="text-lg">
+            {formatCurrency(route.priceInCents / 100)}
+          </div>
           <h1 className="text-2xl font-bold">{route.name}</h1>
           <div className="lime-clamp-3 text-muted-foreground">
             {route.description}
