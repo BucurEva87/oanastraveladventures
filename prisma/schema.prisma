@@ -57,6 +57,7 @@ model User {
   role          Role      @default(USER)
   accounts      Account[]
   session       Session[]
+  orders        Order[]
 }
 
 model VerificationToken {
@@ -100,16 +101,17 @@ model Location {
 }
 
 model Route {
-  id          String  @id @default(cuid())
-  name        String  @db.VarChar(100)
-  available   Boolean @default(true)
-  description String? @db.Text
-  prices      String  @db.VarChar(255)
-  circular    Boolean @default(false)
-  length      Float
+  id           String  @id @default(cuid())
+  name         String  @db.VarChar(100)
+  available    Boolean @default(false)
+  description  String? @db.Text
+  priceInCents Int
+  circular     Boolean @default(false)
+  length       Float
 
   locations RouteLocation[]
   images    Image[]
+  orders    Order[]
 }
 
 model Image {
@@ -135,4 +137,22 @@ model RouteLocation {
   route    Route    @relation(fields: [routeId], references: [id], onDelete: Cascade)
 
   @@unique([locationId, routeId])
+}
+
+model Order {
+  id               String   @id @default(cuid())
+  pricePaidInCents Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  userEmail String
+  routeId   String
+  user      User   @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+  route     Route  @relation(fields: [routeId], references: [id], onDelete: Restrict)
+}
+
+model Setting {
+  id      String @id @default(cuid())
+  metric  String @db.VarChar(5)
+  percent Float
 }

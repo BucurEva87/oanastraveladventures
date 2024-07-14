@@ -10,7 +10,7 @@
     "lint": "next lint",
     "migrate:dev": "dotenv -e .env.development -- npx prisma migrate dev",
     "migrate:deploy": "dotenv -e .env -- npx prisma migrate deploy",
-    "email": "email dev"
+    "email": "cp .env ./node_modules/react-email && email dev --dir src/emails --port 3001"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.6.0",
@@ -26,6 +26,8 @@
     "@react-email/components": "0.0.21",
     "@react-hook/window-size": "^3.1.1",
     "@react-leaflet/core": "^2.1.0",
+    "@stripe/react-stripe-js": "^2.7.3",
+    "@stripe/stripe-js": "^4.1.0",
     "@tanstack/react-table": "^8.17.3",
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
@@ -50,7 +52,9 @@
     "react-select": "^5.8.0",
     "react-simplemde-editor": "^5.2.0",
     "recharts": "^2.12.7",
+    "resend": "^3.4.0",
     "sonner": "^1.5.0",
+    "stripe": "^16.2.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "tailwindcss-debug-screens": "^2.2.1",

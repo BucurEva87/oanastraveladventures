@@ -1,12 +1,12 @@
+import PageTitle from "@/app/admin/_components/PageTitle"
 import DataTable from "@/components/DataTable"
-import PageTitle from "@/components/PageTitle"
-import { columns } from "./columns"
-import Link from "next/link"
-import { City as SchemaCity } from "@prisma/client"
-import prisma from "@/prisma/client"
 import { SystemNotification } from "@/components/Notification"
+import prisma from "@/prisma/client"
+import { City as SchemaCity } from "@prisma/client"
+import Link from "next/link"
+import { columns } from "./columns"
 
-const CitiesPage = async ({ searchParams }: Props) => {
+const CitiesPage = async ({ searchParams }: CityPageProps) => {
   const cities: City[] = await prisma.city.findMany({
     select: {
       id: true,
@@ -45,7 +45,7 @@ const CitiesPage = async ({ searchParams }: Props) => {
   )
 }
 
-type Props = {
+type CityPageProps = {
   searchParams?: {
     [key: string]: string | undefined
   }

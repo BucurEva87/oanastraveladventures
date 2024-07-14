@@ -1,12 +1,12 @@
+import PageTitle from "@/app/admin/_components/PageTitle"
 import DataTable from "@/components/DataTable"
 import { SystemNotification } from "@/components/Notification"
-import PageTitle from "@/components/PageTitle"
 import prisma from "@/prisma/client"
+import { City, Location } from "@prisma/client"
 import Link from "next/link"
 import { columns } from "./columns"
-import { City, Location } from "@prisma/client"
 
-const LocationsPage = async ({ searchParams }: Props) => {
+const LocationsPage = async ({ searchParams }: LocationsProps) => {
   const locations = await prisma.location
     .findMany({
       select: {
@@ -57,7 +57,7 @@ const LocationsPage = async ({ searchParams }: Props) => {
   )
 }
 
-type Props = {
+type LocationsProps = {
   searchParams?: {
     [key: string]: string | undefined
   }

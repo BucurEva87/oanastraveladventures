@@ -29,7 +29,12 @@ const ImageCityPageForm = () => {
         <ImageGallery images={images.map((image) => `${baseUrl}${image}`)} />
       </div>
 
-      <CldUploadWidget signatureEndpoint="/api/sign-image">
+      <CldUploadWidget
+        signatureEndpoint="/api/sign-image"
+        options={{
+          tags: ["test"],
+        }}
+      >
         {({ open }) => {
           return (
             <button

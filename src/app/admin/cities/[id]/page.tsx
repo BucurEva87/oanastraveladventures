@@ -1,5 +1,4 @@
-import DeleteResourceButton from "@/components/buttons/DeleteResourceButton"
-import EditResourceButton from "@/components/buttons/EditResourceButton"
+import SendEmailButton from "@/components/buttons/SendEmailButton"
 import InformationContainer from "@/components/information/InformationContainer"
 import InformationRow from "@/components/information/InformationRow"
 import prisma from "@/prisma/client"
@@ -11,78 +10,58 @@ const Map = dynamic(() => import("@/components/Map"), {
   ssr: false,
 })
 
-const CityPage = async ({ params: { id } }: Props) => {
+const CityPage = async ({ params: { id } }: CityPageProps) => {
   const city = await prisma.city.findUnique({
     where: { id },
   })
 
   if (!city) notFound()
 
-  const {
-    name,
-    country,
-    countryFlag,
-    countryCode,
-    sector,
-    sectorAuto,
-    description,
-    latitude,
-    longitude,
-  } = city
-
   return (
     <InformationContainer>
-      <h1 className="text-3xl font-bold mb-4 text-center">{name}</h1>
+      <h1 className="text-3xl font-bold mb-4 text-center">{city.name}</h1>
       <div className="flex items-center mb-4">
-        <span className="text-xl font-semibold">{country}</span>
-        <span className="mx-2 text-gray-500">({countryCode})</span>
-        <span className="ml-2">{countryFlag}</span>
+        <span className="text-xl font-semibold">{city.country}</span>
+        <span className="mx-2 text-gray-500">({city.countryCode})</span>
+        <span className="ml-2">{city.countryFlag}</span>
       </div>
       <InformationRow
         label="Sector"
-        information={sector}
+        information={city.sector}
       />
       <InformationRow
         label="Sector Auto"
-        information={sectorAuto}
+        information={city.sectorAuto}
       />
-      {!!description && (
+      {!!city.description && (
         <InformationRow
           label="Description"
-          information={description}
+          information={city.description}
           style="inline-block"
         />
       )}
-      {!!latitude && !!longitude && (
+      {!!city.latitude && !!city.longitude && (
         <div className="mb-4">
           <Map
-            center={[latitude, longitude]}
+            center={[city.latitude, city.longitude]}
             markers={[
               {
-                popup: { text: `City ${name}` },
-                position: [latitude, longitude],
+                popup: { text: `City ${city.name}` },
+                position: [city.latitude, city.longitude],
               },
             ]}
           />
         </div>
       )}
-      <div className="flex space-x-4">
-        <EditResourceButton
-          resource="city"
-          url={`/admin/cities/${id}/edit`}
-        />
-        <DeleteResourceButton
-          resource="city"
-          url={`/cities/${id}`}
-          backref="/admin/cities"
-        />
+      {/* <div className="flex space-x-4">
         <Link href={`/admin/cities/${id}/image`}>Test images</Link>
-      </div>
+        <SendEmailButton />
+      </div> */}
     </InformationContainer>
   )
 }
 
-type Props = {
+type CityPageProps = {
   params: {
     id: string
   }

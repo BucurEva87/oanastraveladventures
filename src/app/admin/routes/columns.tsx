@@ -1,10 +1,39 @@
 "use client"
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { formatCurrency } from "@/lib/formatters"
 import { ColumnDef } from "@tanstack/react-table"
+import { CheckCircle2, MoreVertical, XCircle } from "lucide-react"
 import Link from "next/link"
+import { DeleteDropdownItem } from "../_components/ResourcesActions"
+import { deleteRoute } from "../actions/routes"
 import { RouteWithLocations } from "./page"
+import { ActiveToggleDropdownItem } from "./_components/RoutesActions"
 
 export const columns: ColumnDef<RouteWithLocations>[] = [
+  {
+    accessorKey: "available",
+    header: "",
+    cell: ({ row }) => {
+      return row.original.available ? (
+        <>
+          <span className="sr-only">Available</span>
+          <CheckCircle2 />
+        </>
+      ) : (
+        <>
+          <span className="sr-only">Unavailable</span>
+          <XCircle className="stroke-destructive" />
+        </>
+      )
+    },
+  },
   {
     accessorKey: "name",
     header: "Name",
@@ -19,32 +48,39 @@ export const columns: ColumnDef<RouteWithLocations>[] = [
     },
   },
   {
-    accessorKey: "locations",
-    header: "Locations",
+    accessorKey: "priceInCents",
+    header: "Price",
     cell: ({ row }) => {
-      return (
-        <span className="flex gap-3 flex-col md:flex-row">
-          {row.original.locations.map((item) => {
-            const { id, name } = item.location
-
-            return (
-              <Link
-                key={id}
-                href={`/admin/locations/${id}`}
-              >
-                {name}
-              </Link>
-            )
-          })}
-        </span>
-      )
+      return <span>{formatCurrency(row.original.priceInCents / 100)}</span>
     },
   },
   {
-    accessorKey: "length",
-    header: "Length",
+    id: "actions",
+    header: "",
     cell: ({ row }) => {
-      return <span>{row.getValue("length")}</span>
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <MoreVertical />
+            <span className="sr-only">Actions</span>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <ActiveToggleDropdownItem
+              id={row.original.id}
+              available={row.original.available}
+            />
+            <DropdownMenuItem asChild>
+              <Link href={`/admin/routes/${row.original.id}/edit`}>Edit</Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DeleteDropdownItem
+              id={row.original.id}
+              deleteFn={deleteRoute}
+              type="route"
+            />
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
     },
   },
 ]

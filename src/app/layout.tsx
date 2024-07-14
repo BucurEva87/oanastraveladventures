@@ -6,6 +6,7 @@ import SessionWrapper from "../../auth/SessionWrapper"
 import Authentication from "../../auth/Authentication"
 import { Nav, NavLink } from "@/components/Navbar"
 import { Toaster } from "sonner"
+import { SettingsProvider } from "./contexts/SettingsContext"
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -40,8 +41,10 @@ export default async function RootLayout({
             <NavLink href="/admin">Admin</NavLink>
             <Authentication />
           </Nav>
-          {children}
-          <Toaster />
+          <SettingsProvider>
+            {children}
+            <Toaster />
+          </SettingsProvider>
         </SessionWrapper>
       </body>
     </html>

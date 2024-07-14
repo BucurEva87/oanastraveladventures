@@ -1,9 +1,11 @@
 "use client"
 
-import UpdateResourceButton from "@/components/buttons/UpdateResourceButton"
+import FormErrorAlert from "@/app/admin/_components/FormErrorAlert"
+import { updateRoute } from "@/app/admin/actions/routes"
+import { useSettings } from "@/app/contexts/SettingsContext"
+import SubmitResourceButton from "@/components/buttons/SubmitResourceButton"
 import FormContainer from "@/components/form/FormContainer"
 import FormGroupControl from "@/components/form/FormGroupControl"
-import { notify } from "@/components/Notification"
 import {
   Form,
   FormControl,
@@ -13,40 +15,31 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { createRouteSchema } from "@/schemas/routes"
+import { formatCurrency } from "@/lib/formatters"
+import { calculateRouteLength, manageDistance } from "@/lib/utils"
+import { updateRouteSchema } from "@/schemas/routes"
 import { DevTool } from "@hookform/devtools"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Location } from "@prisma/client"
-import { Trash2 } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { Location, Route, RouteLocation } from "@prisma/client"
 import { useEffect, useState } from "react"
-import { useFieldArray, useForm } from "react-hook-form"
+import { useFormState } from "react-dom"
+import { useForm } from "react-hook-form"
 import Select from "react-select"
 import { z } from "zod"
-import { RouteWithLocations } from "./page"
-import { calculateRouteLength } from "@/lib/utils"
 
 const EditRoutePageForm = ({ route }: Props) => {
-  const {
-    id,
-    name,
-    available: routeAvailable,
-    description,
-    prices,
-    circular: routeCircular,
-    length,
-    locations,
-  } = route
-
-  const form = useForm<z.infer<typeof createRouteSchema>>({
-    resolver: zodResolver(createRouteSchema),
+  const { settings } = useSettings()
+  const form = useForm<z.infer<typeof updateRouteSchema>>({
+    resolver: zodResolver(updateRouteSchema),
     defaultValues: {
-      name,
-      available: routeAvailable,
-      description,
-      prices: JSON.parse(prices),
-      circular: routeCircular,
-      length,
+      name: route.name,
+      available: route.available,
+      description: route.description,
+      priceInCents: Math.floor(
+        route.priceInCents / (1 + settings.percent / 100)
+      ),
+      circular: route.circular,
+      length: route.length,
     },
   })
   const {
@@ -55,23 +48,30 @@ const EditRoutePageForm = ({ route }: Props) => {
     watch,
     setValue,
     getValues,
-    handleSubmit,
     formState: { isValid },
   } = form
-  const { fields, append, remove } = useFieldArray({
-    name: "prices",
-    control,
-  })
-  const router = useRouter()
+
+  const adapterFunction = async (state: unknown, formData: FormData) => {
+    return updateRoute(
+      null,
+      route.id,
+      selectedLocations.map((location) => location.id),
+      formData
+    )
+  }
+  const [error, action] = useFormState(adapterFunction, {})
 
   const [selectedLocations, setSelectedLocations] = useState<Location[]>(
-    locations.map((item) => item.location as Location)
+    route.locations.map((item) => item.location as Location)
   )
   const [available, setAvailable] = useState(
-    availableOptions.find((item) => item.value === routeAvailable)
+    availableOptions.find((item) => item.value === route.available)
   )
   const [circular, setCircular] = useState(
-    circularOptions.find((item) => item.value === routeCircular)
+    circularOptions.find((item) => item.value === route.circular)
+  )
+  const [priceInCents, setPriceInCents] = useState<number>(
+    route.priceInCents / (1 + settings.percent / 100)
   )
 
   useEffect(() => {
@@ -85,43 +85,13 @@ const EditRoutePageForm = ({ route }: Props) => {
     )
   }, [selectedLocations, getValues, setValue, circular])
 
-  const onSubmit = async (values: z.infer<typeof createRouteSchema>) => {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/routes/${id}`,
-      {
-        method: "PATCH",
-        body: JSON.stringify({
-          ...values,
-          prices: JSON.stringify(values.prices),
-          locationsIds: selectedLocations.map((location) => location.id),
-        }),
-      }
-    )
-
-    if (!response) {
-      notify({
-        type: "error",
-        title: "Oups! There was an error",
-        description: "Something went bad. Please see the terminal",
-      })
-      return
-    }
-
-    notify({
-      type: "success",
-      title: "Yahoo! You did it!",
-      description: `${values.name} was updated successfully`,
-    })
-    router.push("/admin/routes")
-  }
-
   return (
     <>
       <Form {...form}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form action={action}>
           <FormContainer>
             <h1 className="text-2xl font-semibold mb-4 text-center">
-              Let&apos;s edit {name}!
+              Let&apos;s edit {route.name}!
             </h1>
 
             <FormGroupControl label="Name">
@@ -129,7 +99,7 @@ const EditRoutePageForm = ({ route }: Props) => {
                 {...register("name")}
                 placeholder="Please insert the name of the route"
                 type="text"
-                defaultValue={name}
+                defaultValue={route.name}
               />
             </FormGroupControl>
 
@@ -137,7 +107,9 @@ const EditRoutePageForm = ({ route }: Props) => {
               <Select
                 isMulti
                 defaultValue={selectedLocations}
-                options={locations.map((item) => item.location as Location)}
+                options={route.locations.map(
+                  (item) => item.location as Location
+                )}
                 getOptionLabel={(option: Location) => option.name}
                 getOptionValue={(option: Location) => option.id}
                 className="basic-multi-select text-black"
@@ -150,14 +122,15 @@ const EditRoutePageForm = ({ route }: Props) => {
             </FormGroupControl>
 
             <FormGroupControl label="Total length: ">
-              {watch("length")} kilometers
+              {manageDistance(watch("length"), settings.metric)}{" "}
+              {settings.metric}
             </FormGroupControl>
 
             <Input
               {...register("length", {
                 valueAsNumber: true,
               })}
-              defaultValue={length}
+              defaultValue={route.length}
               type="hidden"
             />
 
@@ -196,7 +169,7 @@ const EditRoutePageForm = ({ route }: Props) => {
                 {...register("description")}
                 placeholder={`Please provide a description of ${watch("name")}`}
                 rows={8}
-                defaultValue={description ?? undefined}
+                defaultValue={route.description ?? undefined}
               />
             </FormGroupControl>
 
@@ -230,50 +203,32 @@ const EditRoutePageForm = ({ route }: Props) => {
               />
             </FormGroupControl>
 
-            <div>
-              {fields.map((field, index) => {
-                return (
-                  <FormGroupControl key={field.id}>
-                    <div className="flex gap-4 relative">
-                      <Input
-                        {...register(`prices.${index}.people`, {
-                          valueAsNumber: true,
-                        })}
-                        type="text"
-                        placeholder="People #"
-                      />
-                      <Input
-                        {...register(`prices.${index}.price`, {
-                          valueAsNumber: true,
-                        })}
-                        type="text"
-                        placeholder="Price per person"
-                      />
-                      {index > 0 && (
-                        <Trash2
-                          onClick={() => remove(index)}
-                          className="absolute right-[-2rem] top-[10px] hover:cursor-pointer text-red-800"
-                        />
-                      )}
-                    </div>
-                  </FormGroupControl>
-                )
-              })}
-              <div className="flex justify-center">
-                <a
-                  className="hover:cursor-pointer"
-                  onClick={() =>
-                    append({ people: undefined, price: undefined })
-                  }
-                >
-                  Add another price
-                </a>
-              </div>
-            </div>
+            <FormGroupControl label="Price (in cents)">
+              <Input
+                {...register("priceInCents")}
+                type="number"
+                defaultValue={route.priceInCents}
+                onChange={(e) => setPriceInCents(Number(e.target.value))}
+              />
+            </FormGroupControl>
+            <span className="mr-auto">
+              {!!priceInCents
+                ? formatCurrency(
+                    (priceInCents + (priceInCents / 100) * settings.percent) /
+                      100
+                  )
+                : formatCurrency(0)}
+            </span>
+
+            {!!error && !!Object.keys(error).length && (
+              <FormErrorAlert error={error} />
+            )}
 
             {!!isValid && (
               <div className="flex justify-center">
-                <UpdateResourceButton resource={name} />
+                <SubmitResourceButton
+                  resource={`Update ${getValues("name")}`}
+                />
               </div>
             )}
           </FormContainer>
@@ -292,6 +247,12 @@ const availableOptions = [
   { value: true, label: "Available" },
   { value: false, label: "Unavailable" },
 ]
+
+type RouteWithLocations = Route & {
+  locations: (RouteLocation & {
+    location: Pick<Location, "id" | "name" | "latitude" | "longitude">
+  })[]
+}
 
 type Props = {
   route: RouteWithLocations

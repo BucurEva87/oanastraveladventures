@@ -1,7 +1,7 @@
-import PageTitle from "@/components/PageTitle"
+import PageTitle from "@/app/admin/_components/PageTitle"
 import DataTable from "@/components/DataTable"
-import { columns as usersColumns } from "./usersColumns"
 import prisma from "@/prisma/client"
+import { columns } from "./usersColumns"
 
 export default async function UsersPage() {
   const users = await prisma.user.findMany({
@@ -19,7 +19,7 @@ export default async function UsersPage() {
     <div className="flex flex-col gap-5 w-full">
       <PageTitle title="Users" />
       <DataTable
-        columns={usersColumns}
+        columns={columns}
         data={users}
       />
     </div>

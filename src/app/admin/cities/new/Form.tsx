@@ -1,22 +1,23 @@
 "use client"
 
+import CitySelectFromAPI from "@/app/admin/_components/CitySelectFromAPI"
+import CountrySelectFromAPI from "@/app/admin/_components/CountrySelectFromAPI"
+import SectorSelectFromAPI from "@/app/admin/_components/SectorSelectFromAPI"
 import SubmitResourceButton from "@/components/buttons/SubmitResourceButton"
-import CitySelectFromAPI from "@/components/CitySelectFromAPI"
-import CountrySelectFromAPI from "@/components/CountrySelectFromAPI"
 import FormContainer from "@/components/form/FormContainer"
 import FormGroupControl from "@/components/form/FormGroupControl"
-import { notify } from "@/components/Notification"
-import SectorSelectFromAPI from "@/components/SectorSelectFromAPI"
 import { Form } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { createCitySchema } from "@/schemas/cities"
 import { DevTool } from "@hookform/devtools"
 import { zodResolver } from "@hookform/resolvers/zod"
 import dynamic from "next/dynamic"
-import { useRouter } from "next/navigation"
+import { useFormState } from "react-dom"
 import { FormProvider, useForm } from "react-hook-form"
 import { z } from "zod"
+import FormErrorAlert from "../../_components/FormErrorAlert"
+import { createCity } from "../../actions/cities"
+import { createCitySchema } from "@/schemas/cities"
 
 const Map = dynamic(() => import("@/components/Map"), {
   ssr: false,
@@ -31,44 +32,18 @@ const NewCityPageForm = () => {
       longitude: null,
     },
   })
-  const { register, control, getValues, handleSubmit, watch, formState } = form
+  const { register, control, getValues, watch, formState } = form
   const { isValid } = formState
-  const router = useRouter()
+  const [error, action] = useFormState(createCity, {})
 
   const lat = getValues("latitude")
   const lon = getValues("longitude")
-
-  const onSubmit = async (values: z.infer<typeof createCitySchema>) => {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/cities`,
-      {
-        method: "POST",
-        body: JSON.stringify(values),
-      }
-    )
-
-    if (!response) {
-      notify({
-        type: "error",
-        title: "Oups! There was an error",
-        description: "Something went bad. Please see the terminal",
-      })
-      return
-    }
-
-    notify({
-      type: "success",
-      title: "Yahoo! You did it!",
-      description: `City ${values.name} was created successfully`,
-    })
-    router.push("/admin/cities")
-  }
 
   return (
     <>
       <Form {...form}>
         <FormProvider {...form}>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form action={action}>
             <FormContainer>
               <h1 className="text-2xl font-semibold">
                 Let&apos;s add a new city!
@@ -110,15 +85,11 @@ const NewCityPageForm = () => {
                   </FormGroupControl>
 
                   <Input
-                    {...register("latitude", {
-                      valueAsNumber: true,
-                    })}
+                    {...register("latitude")}
                     type="hidden"
                   />
                   <Input
-                    {...register("longitude", {
-                      valueAsNumber: true,
-                    })}
+                    {...register("longitude")}
                     type="hidden"
                   />
                 </>
@@ -149,6 +120,8 @@ const NewCityPageForm = () => {
                   />
                 </div>
               )}
+
+              {!!Object.keys(error).length && <FormErrorAlert error={error} />}
 
               {!!isValid && (
                 <div className="flex justify-center">

@@ -1,11 +1,10 @@
-import PageTitle from "@/components/PageTitle"
+import PageTitle from "@/app/admin/_components/PageTitle"
 import prisma from "@/prisma/client"
 import Link from "next/link"
 import NewRoutePageForm from "./Form"
-import { Location as SchemaLocation } from "@prisma/client"
 
 const NewRoutePage = async () => {
-  const locations: Location[] = await prisma.location.findMany({
+  const locations = await prisma.location.findMany({
     select: {
       id: true,
       name: true,
@@ -29,10 +28,5 @@ const NewRoutePage = async () => {
 
   return <NewRoutePageForm locations={locations} />
 }
-
-export type Location = Pick<
-  SchemaLocation,
-  "id" | "name" | "latitude" | "longitude"
->
 
 export default NewRoutePage

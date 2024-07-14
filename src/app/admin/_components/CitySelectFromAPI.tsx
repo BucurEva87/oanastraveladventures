@@ -1,13 +1,18 @@
 "use client"
 
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form"
+import { noDia } from "@/lib/utils"
 import { CityFromAPI, CoordFromAPI } from "@/types"
 import { useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { SingleValue } from "react-select"
 import AsyncSelect from "react-select/async"
 import { toast } from "sonner"
-import { FormControl, FormField, FormItem, FormMessage } from "./ui/form"
-import { noDia } from "@/lib/utils"
 
 export const CitySelectFromAPI = ({ country, sector }: Props) => {
   const { control, setValue } = useFormContext()

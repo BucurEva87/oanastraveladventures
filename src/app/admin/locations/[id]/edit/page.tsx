@@ -1,9 +1,9 @@
 import prisma from "@/prisma/client"
+import { City, Location } from "@prisma/client"
 import { notFound } from "next/navigation"
 import EditLocationPageForm from "./Form"
-import { City, Location } from "@prisma/client"
 
-const EditLocationPage = async ({ params: { id } }: Props) => {
+const EditLocationPage = async ({ params: { id } }: EditLocationPageProps) => {
   const location = (await prisma.location.findUnique({
     where: { id },
     include: {
@@ -23,7 +23,7 @@ const EditLocationPage = async ({ params: { id } }: Props) => {
   return <EditLocationPageForm location={location} />
 }
 
-type Props = {
+type EditLocationPageProps = {
   params: {
     id: string
   }

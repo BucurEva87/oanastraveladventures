@@ -8,7 +8,7 @@ import {
   formatPositive,
 } from "@/lib/formatters"
 import Card, { CardContent } from "./_components/Card"
-import PageTitle from "../../components/PageTitle"
+import PageTitle from "./_components/PageTitle"
 import BarChart from "./_components/BarChart"
 import SalesCard from "./_components/SalesCard"
 

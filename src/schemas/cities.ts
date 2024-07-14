@@ -1,4 +1,10 @@
-import { z } from 'zod'
+import { z } from "zod"
+
+const updateCityFields = {
+  latitude: z.coerce.number().nullable(),
+  longitude: z.coerce.number().nullable(),
+  description: z.string().nullable(),
+}
 
 export const createCitySchema = z.object({
   name: z.string().max(100),
@@ -7,13 +13,7 @@ export const createCitySchema = z.object({
   countryCode: z.string().length(2),
   sector: z.string().max(100),
   sectorAuto: z.string().max(100),
-  latitude: z.number().nullable(),
-  longitude: z.number().nullable(),
-  description: z.string().nullable()
+  ...updateCityFields,
 })
 
-export const updateCitySchema = z.object({
-  latitude: z.number().nullable(),
-  longitude: z.number().nullable(),
-  description: z.string().nullable()
-})
+export const updateCitySchema = z.object(updateCityFields)

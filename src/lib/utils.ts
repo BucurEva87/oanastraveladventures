@@ -115,3 +115,11 @@ export const calculateRouteLength = (locations: { latitude: number | null, longi
 
 	return Number(length.toFixed(2))
 }
+
+export const capitalize = (string: string) => {
+	return `${string[0].toUpperCase()}${string.substring(1)}`
+}
+
+export const manageDistance = (distance: number, metric: string) => {
+	return metric === 'km' ? distance.toFixed(2) : (distance * 0.621371).toFixed(2)
+}

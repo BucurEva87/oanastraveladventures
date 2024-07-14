@@ -3,7 +3,6 @@
 import SubmitResourceButton from "@/components/buttons/SubmitResourceButton"
 import FormContainer from "@/components/form/FormContainer"
 import FormGroupControl from "@/components/form/FormGroupControl"
-import { notify } from "@/components/Notification"
 import {
   Form,
   FormControl,
@@ -19,17 +18,19 @@ import { DevTool } from "@hookform/devtools"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { City } from "@prisma/client"
 import dynamic from "next/dynamic"
-import { useRouter } from "next/navigation"
 import { useState } from "react"
+import { useFormState } from "react-dom"
 import { useForm } from "react-hook-form"
 import Select from "react-select"
 import { z } from "zod"
+import FormErrorAlert from "../../_components/FormErrorAlert"
+import { createLocation } from "../../actions/locations"
 
 const Map = dynamic(() => import("@/components/Map"), {
   ssr: false,
 })
 
-const NewLocationPageForm = ({ cities }: Props) => {
+const NewLocationPageForm = ({ cities }: NewLocationPageFormProps) => {
   const form = useForm<z.infer<typeof createLocationSchema>>({
     resolver: zodResolver(createLocationSchema),
     defaultValues: {
@@ -42,17 +43,9 @@ const NewLocationPageForm = ({ cities }: Props) => {
       longitude: null,
     },
   })
-  const {
-    register,
-    control,
-    getValues,
-    setValue,
-    handleSubmit,
-    watch,
-    formState,
-  } = form
+  const { register, control, getValues, setValue, watch, formState } = form
   const { isValid } = formState
-  const router = useRouter()
+  const [error, action] = useFormState(createLocation, {})
 
   const cityOptions = cities.map((city) => {
     const { id, name, sector, sectorAuto, country, countryCode, countryFlag } =
@@ -93,36 +86,10 @@ const NewLocationPageForm = ({ cities }: Props) => {
     })
   }
 
-  const onSubmit = async (values: z.infer<typeof createLocationSchema>) => {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/locations`,
-      {
-        method: "POST",
-        body: JSON.stringify(values),
-      }
-    )
-
-    if (!response) {
-      notify({
-        type: "error",
-        title: "Oups! There was an error",
-        description: "Something went bad. Please see the terminal",
-      })
-      return
-    }
-
-    notify({
-      type: "success",
-      title: "Yahoo! You did it!",
-      description: `Location ${values.name} was created successfully`,
-    })
-    router.push("/admin/locations")
-  }
-
   return (
     <>
       <Form {...form}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form action={action}>
           <FormContainer>
             <h1 className="text-2xl font-semibold">
               Let&apos;s add a new location!
@@ -195,9 +162,7 @@ const NewLocationPageForm = ({ cities }: Props) => {
 
             <FormGroupControl label="Entry Fee">
               <Input
-                {...register("entryFee", {
-                  valueAsNumber: true,
-                })}
+                {...register("entryFee")}
                 type="number"
                 step={0.01}
                 placeholder="How much does visiting this location cost?"
@@ -207,15 +172,11 @@ const NewLocationPageForm = ({ cities }: Props) => {
             {watch("name") && (
               <>
                 <Input
-                  {...register("latitude", {
-                    valueAsNumber: true,
-                  })}
+                  {...register("latitude")}
                   type="hidden"
                 />
                 <Input
-                  {...register("longitude", {
-                    valueAsNumber: true,
-                  })}
+                  {...register("longitude")}
                   type="hidden"
                 />
               </>
@@ -235,6 +196,8 @@ const NewLocationPageForm = ({ cities }: Props) => {
               </div>
             )}
 
+            {!!Object.keys(error).length && <FormErrorAlert error={error} />}
+
             {!!isValid && (
               <div className="flex justify-center">
                 <SubmitResourceButton resource={`Add ${getValues("name")}`} />
@@ -248,7 +211,7 @@ const NewLocationPageForm = ({ cities }: Props) => {
   )
 }
 
-type Props = {
+type NewLocationPageFormProps = {
   cities: Omit<City, "description" | "latitude" | "longitude">[]
 }
 

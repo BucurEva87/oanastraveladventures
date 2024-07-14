@@ -1,7 +1,17 @@
 "use client"
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
+import { MoreVertical } from "lucide-react"
 import Link from "next/link"
+import { DeleteDropdownItem } from "../_components/ResourcesActions"
+import { deleteLocation } from "../actions/locations"
 import { LocationWithCity } from "./page"
 
 export const columns: ColumnDef<LocationWithCity>[] = [
@@ -37,6 +47,33 @@ export const columns: ColumnDef<LocationWithCity>[] = [
     header: "Type",
     cell: ({ row }) => {
       return <span>{row.getValue("type")}</span>
+    },
+  },
+  {
+    id: "actions",
+    header: "",
+    cell: ({ row }) => {
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <MoreVertical />
+            <span className="sr-only">Actions</span>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem asChild>
+              <Link href={`/admin/locations/${row.original.id}/edit`}>
+                Edit
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DeleteDropdownItem
+              id={row.original.id}
+              deleteFn={deleteLocation}
+              type="location"
+            />
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
     },
   },
 ]

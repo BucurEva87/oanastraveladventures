@@ -1,9 +1,8 @@
 import prisma from "@/prisma/client"
-import { Location, Route, RouteLocation } from "@prisma/client"
 import { notFound } from "next/navigation"
 import EditRoutePageForm from "./Form"
 
-const EditRoutePage = async ({ params: { id } }: Props) => {
+const EditRoutePage = async ({ params: { id } }: EditRoutePageProps) => {
   const route = await prisma.route.findUnique({
     where: { id },
     include: {
@@ -27,16 +26,10 @@ const EditRoutePage = async ({ params: { id } }: Props) => {
   return <EditRoutePageForm route={route} />
 }
 
-type Props = {
+type EditRoutePageProps = {
   params: {
     id: string
   }
-}
-
-export type RouteWithLocations = Route & {
-  locations: (RouteLocation & {
-    location: Pick<Location, "id" | "name" | "latitude" | "longitude">
-  })[]
 }
 
 export default EditRoutePage

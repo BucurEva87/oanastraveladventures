@@ -1,5 +1,3 @@
-import DeleteResourceButton from "@/components/buttons/DeleteResourceButton"
-import EditResourceButton from "@/components/buttons/EditResourceButton"
 import ExternalLink from "@/components/ExternalLink"
 import InformationContainer from "@/components/information/InformationContainer"
 import InformationRow from "@/components/information/InformationRow"
@@ -11,7 +9,7 @@ const Map = dynamic(() => import("@/components/Map"), {
   ssr: false,
 })
 
-const LocationPage = async ({ params: { id } }: Props) => {
+const LocationPage = async ({ params: { id } }: LocationPageProps) => {
   const location = await prisma.location.findUnique({
     where: { id },
     include: {
@@ -28,89 +26,71 @@ const LocationPage = async ({ params: { id } }: Props) => {
 
   if (!location || !location.city) notFound()
 
-  const {
-    name,
-    type,
-    description,
-    website,
-    entryFee,
-    latitude,
-    longitude,
-    city: { name: cityName, sector, country, countryFlag },
-  } = location
-
   return (
     <InformationContainer>
-      <h1 className="text-3xl font-bold mb-4 text-center">{name}</h1>
+      <h1 className="text-3xl font-bold mb-4 text-center">{location.name}</h1>
       <div className="flex items-center mb-4">
-        <span className="text-xl font-semibold">{country}</span>
-        <span className="ml-2">{countryFlag}</span>
+        <span className="text-xl font-semibold">{location.city.country}</span>
+        <span className="ml-2">{location.city.countryFlag}</span>
       </div>
       <InformationRow
         label="City"
-        information={cityName}
+        information={location.city.name}
       />
       <InformationRow
         label="Sector"
-        information={sector}
+        information={location.city.sector}
       />
-      {!!type && (
+      {!!location.type && (
         <InformationRow
           label="Type"
-          information={type}
+          information={location.type}
           style="inline-block"
         />
       )}
-      {!!description && (
+      {!!location.description && (
         <InformationRow
           label="Description"
-          information={description}
+          information={location.description}
           style="inline-block"
         />
       )}
-      {!!website && (
+      {!!location.website && (
         <InformationRow
           label="Website"
-          information={<ExternalLink href={website}>{website}</ExternalLink>}
+          information={
+            <ExternalLink href={location.website}>
+              {location.website}
+            </ExternalLink>
+          }
           style="inline-block"
         />
       )}
-      {!!entryFee && (
+      {!!location.entryFee && (
         <InformationRow
           label="Entry Fee"
-          information={entryFee}
+          information={location.entryFee}
           style="inline-block"
         />
       )}
-      {!!latitude && !!longitude && (
+      {!!location.latitude && !!location.longitude && (
         <div className="mb-4">
           <Map
-            center={[latitude, longitude]}
+            center={[location.latitude, location.longitude]}
             markers={[
               {
-                popup: { text: name },
-                position: [latitude, longitude],
+                popup: { text: location.name },
+                position: [location.latitude, location.longitude],
               },
             ]}
           />
         </div>
       )}
-      <div className="flex space-x-4">
-        <EditResourceButton
-          resource="location"
-          url={`/admin/locations/${id}/edit`}
-        />
-        <DeleteResourceButton
-          resource="location"
-          url={`/locations/${id}`}
-          backref="/admin/locations"
-        />
-      </div>
     </InformationContainer>
   )
 }
 
-type Props = {
+type LocationPageProps = {
   params: {
     id: string
   }

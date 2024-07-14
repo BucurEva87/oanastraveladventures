@@ -1,12 +1,13 @@
 "use client"
 
-import UpdateResourceButton from "@/components/buttons/UpdateResourceButton"
+import FormErrorAlert from "@/app/admin/_components/FormErrorAlert"
+import { updateLocation } from "@/app/admin/actions/locations"
+import SubmitResourceButton from "@/components/buttons/SubmitResourceButton"
 import FormContainer from "@/components/form/FormContainer"
 import FormGroupControl from "@/components/form/FormGroupControl"
 import InformationContainer from "@/components/information/InformationContainer"
 import InformationRow from "@/components/information/InformationRow"
 import Map from "@/components/Map"
-import { notify } from "@/components/Notification"
 import { Form } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -14,33 +15,22 @@ import { convertDMSToDD } from "@/lib/utils"
 import { updateLocationschema } from "@/schemas/locations"
 import { DevTool } from "@hookform/devtools"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter } from "next/navigation"
 import { useEffect } from "react"
+import { useFormState } from "react-dom"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { LocationWithCity } from "./page"
 
 const EditLocationPageForm = ({ location }: Props) => {
-  const {
-    id,
-    name,
-    type,
-    description,
-    website,
-    entryFee,
-    latitude,
-    longitude,
-    city: { name: cityName, sector, country, countryFlag },
-  } = location
   const form = useForm<z.infer<typeof updateLocationschema>>({
     resolver: zodResolver(updateLocationschema),
     defaultValues: {
-      type,
-      description,
-      website,
-      entryFee,
-      latitude: latitude ?? undefined,
-      longitude: longitude ?? undefined,
+      type: location.type,
+      description: location.description,
+      website: location.website,
+      entryFee: location.entryFee,
+      latitude: location.latitude ?? undefined,
+      longitude: location.longitude ?? undefined,
     },
   })
   const {
@@ -49,72 +39,47 @@ const EditLocationPageForm = ({ location }: Props) => {
     getValues,
     setValue,
     watch,
-    handleSubmit,
     formState: { isValid },
   } = form
-  const router = useRouter()
+
+  const adapterFunction = async (state: unknown, formData: FormData) => {
+    return updateLocation(null, location.id, formData)
+  }
+  const [error, action] = useFormState(adapterFunction, {})
 
   const lat = getValues("latitude")
-  const { onBlur: latOnBlur, ...latRegisterProps } = register("latitude", {
-    valueAsNumber: true,
-  })
+  const { onBlur: latOnBlur, ...latRegisterProps } = register("latitude")
   const lon = getValues("longitude")
-  const { onBlur: lonOnBlur, ...lonRegisterProps } = register("longitude", {
-    valueAsNumber: true,
-  })
+  const { onBlur: lonOnBlur, ...lonRegisterProps } = register("longitude")
 
   useEffect(() => {
-    if (!latitude || !longitude) return
+    if (!location.latitude || !location.longitude) return
 
-    setValue("latitude", latitude, { shouldTouch: true })
-    setValue("longitude", longitude, { shouldTouch: true })
-  }, [latitude, longitude, setValue])
-
-  const onSubmit = async (values: z.infer<typeof updateLocationschema>) => {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/locations/${id}`,
-      {
-        method: "PATCH",
-        body: JSON.stringify(values),
-      }
-    )
-
-    if (!response) {
-      notify({
-        type: "error",
-        title: "Oups! There was an error",
-        description: "Something went bad. Please see the terminal",
-      })
-      return
-    }
-
-    notify({
-      type: "success",
-      title: "Yahoo! You did it!",
-      description: `${name} was updated successfully`,
-    })
-    router.push("/admin/locations")
-  }
+    setValue("latitude", location.latitude, { shouldTouch: true })
+    setValue("longitude", location.longitude, { shouldTouch: true })
+  }, [location.latitude, location.longitude, setValue])
 
   return (
     <>
       <Form {...form}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form action={action}>
           <InformationContainer>
             <h1 className="text-2xl font-semibold mb-4 text-center">
-              Let&apos;s edit {name}!
+              Let&apos;s edit {location.name}!
             </h1>
             <div className="flex items-center mb-4">
-              <span className="text-xl font-semibold">{country}</span>
-              <span className="ml-2">{countryFlag}</span>
+              <span className="text-xl font-semibold">
+                {location.city.country}
+              </span>
+              <span className="ml-2">{location.city.countryFlag}</span>
             </div>
             <InformationRow
               label="City"
-              information={cityName}
+              information={location.city.name}
             />
             <InformationRow
               label="Sector"
-              information={sector}
+              information={location.city.sector}
             />
           </InformationContainer>
 
@@ -124,7 +89,7 @@ const EditLocationPageForm = ({ location }: Props) => {
                 <Input
                   {...latRegisterProps}
                   placeholder="Insert latitude"
-                  defaultValue={latitude ?? undefined}
+                  defaultValue={location.latitude ?? undefined}
                   type="text"
                   onBlur={(e) => {
                     setValue("latitude", convertDMSToDD(e.target.value), {
@@ -140,7 +105,7 @@ const EditLocationPageForm = ({ location }: Props) => {
                 <Input
                   {...lonRegisterProps}
                   placeholder="Insert longitude"
-                  defaultValue={longitude ?? undefined}
+                  defaultValue={location.longitude ?? undefined}
                   type="text"
                   onBlur={(e) => {
                     setValue("longitude", convertDMSToDD(e.target.value), {
@@ -157,9 +122,9 @@ const EditLocationPageForm = ({ location }: Props) => {
             <FormGroupControl label="Description">
               <Textarea
                 {...register("description")}
-                placeholder={`Please provide a description of ${name}`}
+                placeholder={`Please provide a description of ${location.name}`}
                 rows={10}
-                defaultValue={description ?? undefined}
+                defaultValue={location.description ?? undefined}
               />
             </FormGroupControl>
 
@@ -167,7 +132,7 @@ const EditLocationPageForm = ({ location }: Props) => {
               <Input
                 {...register("type")}
                 placeholder="Location type (ex: restaurant, museum)"
-                defaultValue={type ?? undefined}
+                defaultValue={location.type ?? undefined}
               />
             </FormGroupControl>
 
@@ -175,19 +140,17 @@ const EditLocationPageForm = ({ location }: Props) => {
               <Input
                 {...register("website")}
                 placeholder="Website of the location"
-                defaultValue={website ?? undefined}
+                defaultValue={location.website ?? undefined}
               />
             </FormGroupControl>
 
             <FormGroupControl label="Entry Fee">
               <Input
-                {...register("entryFee", {
-                  valueAsNumber: true,
-                })}
+                {...register("entryFee")}
                 type="number"
                 step={0.01}
                 placeholder="How much does visiting this location cost?"
-                defaultValue={entryFee ?? undefined}
+                defaultValue={location.entryFee ?? undefined}
               />
             </FormGroupControl>
 
@@ -197,7 +160,7 @@ const EditLocationPageForm = ({ location }: Props) => {
                   center={[lat, lon]}
                   markers={[
                     {
-                      popup: { text: `City ${name}` },
+                      popup: { text: location.name },
                       position: [lat, lon],
                     },
                   ]}
@@ -205,9 +168,11 @@ const EditLocationPageForm = ({ location }: Props) => {
               </div>
             )}
 
+            {!!Object.keys(error).length && <FormErrorAlert error={error} />}
+
             {!!isValid && (
               <div className="flex justify-center">
-                <UpdateResourceButton resource={name} />
+                <SubmitResourceButton resource={`Update ${location.name}`} />
               </div>
             )}
           </FormContainer>

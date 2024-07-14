@@ -1,13 +1,18 @@
 "use client"
 
+import { noDia } from "@/lib/utils"
 import { SectorFromAPI } from "@/types"
 import { useEffect, useState } from "react"
 import { useFormContext } from "react-hook-form"
 import { SingleValue } from "react-select"
 import AsyncSelect from "react-select/async"
 import { toast } from "sonner"
-import { FormControl, FormField, FormItem, FormMessage } from "./ui/form"
-import { noDia } from "@/lib/utils"
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form"
 
 export const SectorSelectFromAPI = ({ country }: Props) => {
   const { control, setValue } = useFormContext()

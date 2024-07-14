@@ -1,17 +1,18 @@
+import PageTitle from "@/app/admin/_components/PageTitle"
 import { SystemNotification } from "@/components/Notification"
-import PageTitle from "@/components/PageTitle"
 import prisma from "@/prisma/client"
 import { Location, Route, RouteLocation } from "@prisma/client"
 import Link from "next/link"
 import RoutesPageTable from "./Table"
 
-const RoutesPage = async ({ searchParams }: Props) => {
+const RoutesPage = async ({ searchParams }: RoutesPageProps) => {
   const routes: RouteWithLocations[] = await prisma.route.findMany({
     select: {
       id: true,
       name: true,
       available: true,
       length: true,
+      priceInCents: true,
       locations: {
         select: {
           id: true,
@@ -57,7 +58,7 @@ const RoutesPage = async ({ searchParams }: Props) => {
 
         <div className="text-center">
           <Link href="/admin/routes/new">
-            {routes.length ? "Add another location" : "Perhaps add one?"}
+            {routes.length ? "Add another route" : "Perhaps add one?"}
           </Link>
         </div>
       </div>
@@ -66,7 +67,7 @@ const RoutesPage = async ({ searchParams }: Props) => {
   )
 }
 
-type Props = {
+type RoutesPageProps = {
   searchParams?: {
     [key: string]: string | undefined
   }
@@ -74,7 +75,7 @@ type Props = {
 
 export type RouteWithLocations = Pick<
   Route,
-  "id" | "name" | "available" | "length"
+  "id" | "name" | "available" | "length" | "priceInCents"
 > & {
   locations: (Pick<RouteLocation, "id"> & {
     location: Pick<Location, "id" | "name">

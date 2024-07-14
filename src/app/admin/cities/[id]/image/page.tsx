@@ -1,7 +1,7 @@
 import prisma from "@/prisma/client"
 import ImageCityPageForm from "./Form"
 import { notFound } from "next/navigation"
-import PageTitle from "@/components/PageTitle"
+import PageTitle from "@/app/admin/_components/PageTitle"
 import { v2 as cloudinary } from "cloudinary"
 
 cloudinary.config({
@@ -18,8 +18,8 @@ const ImageCityPage = async ({ params: { id } }: Props) => {
   if (!city) return notFound()
 
   // const resources = await cloudinary.search.expression("converse").execute()
-  // const resources = await cloudinary.api.resources({ type: "upload" })
-  // console.log(resources)
+  const resources = await cloudinary.api.resources_by_tag("test")
+  console.log(resources)
 
   return (
     <>

@@ -1,10 +1,20 @@
-import PageTitle from "@/components/PageTitle"
+import PageTitle from "@/app/admin/_components/PageTitle"
 import prisma from "@/prisma/client"
 import Link from "next/link"
 import NewLocationPageForm from "./Form"
 
 const NewLocationPage = async () => {
-  const cities = await prisma.city.findMany()
+  const cities = await prisma.city.findMany({
+    select: {
+      id: true,
+      name: true,
+      country: true,
+      countryCode: true,
+      countryFlag: true,
+      sector: true,
+      sectorAuto: true,
+    },
+  })
 
   if (!cities.length)
     return (
@@ -19,19 +29,7 @@ const NewLocationPage = async () => {
       </>
     )
 
-  return (
-    <NewLocationPageForm
-      cities={cities.map((city) => ({
-        id: city.id,
-        name: city.name,
-        sector: city.sector,
-        sectorAuto: city.sectorAuto,
-        country: city.country,
-        countryCode: city.countryCode,
-        countryFlag: city.countryFlag,
-      }))}
-    />
-  )
+  return <NewLocationPageForm cities={cities} />
 }
 
 export default NewLocationPage

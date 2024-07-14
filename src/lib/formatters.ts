@@ -4,7 +4,7 @@ const CURRENCY_FORMATTER = new Intl.NumberFormat('en-US', {
   minimumFractionDigits: 2
 })
 
-const DATE_FORMATTER = new Intl.DateTimeFormat('en-US')
+const DATE_FORMATTER = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' })
 
 export function formatCurrency(amount: number) {
   return CURRENCY_FORMATTER.format(amount)

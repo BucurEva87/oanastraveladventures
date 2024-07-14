@@ -1,47 +1,49 @@
-import DeleteResourceButton from "@/components/buttons/DeleteResourceButton"
-import EditResourceButton from "@/components/buttons/EditResourceButton"
 import InformationContainer from "@/components/information/InformationContainer"
 import InformationRow from "@/components/information/InformationRow"
+import { formatCurrency } from "@/lib/formatters"
+import { manageDistance } from "@/lib/utils"
 import prisma from "@/prisma/client"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-const RoutePage = async ({ params: { id } }: Props) => {
-  const route = await prisma.route.findUnique({
-    where: { id },
-    include: {
-      locations: {
-        include: {
-          location: {
-            select: {
-              id: true,
-              name: true,
-              city: {
-                select: {
-                  id: true,
-                  name: true,
-                  country: true,
-                  countryFlag: true,
+const RoutePage = async ({ params: { id } }: RoutePageProps) => {
+  const [route, settings] = await Promise.all([
+    await prisma.route.findUnique({
+      where: { id },
+      include: {
+        locations: {
+          include: {
+            location: {
+              select: {
+                id: true,
+                name: true,
+                city: {
+                  select: {
+                    id: true,
+                    name: true,
+                    country: true,
+                    countryFlag: true,
+                  },
                 },
               },
             },
           },
         },
       },
+    }),
+    (await prisma.setting.findFirst({ select: { metric: true } })) as {
+      metric: string
     },
-  })
+  ])
 
   if (!route) notFound()
-
-  const { name, available, description, prices, circular, length, locations } =
-    route
 
   return (
     <InformationContainer>
       <h1 className="text-3xl font-bold mb-4 text-center">
-        {name} ({available ? "Available" : "Not available"})
+        {route.name} ({route.available ? "Available" : "Unavailable"})
       </h1>
-      {locations.map((item, index) => {
+      {route.locations.map((item, index) => {
         return (
           <InformationRow
             key={item.location.id}
@@ -63,48 +65,33 @@ const RoutePage = async ({ params: { id } }: Props) => {
           />
         )
       })}
-      {!!description && (
+
+      <InformationRow
+        label="Length"
+        information={`${manageDistance(route.length, settings.metric)} ${
+          settings.metric
+        }`}
+        style="inline-block"
+      />
+
+      {!!route.description && (
         <InformationRow
           label="Description"
-          information={description}
+          information={route.description}
           style="inline-block"
         />
       )}
 
       <InformationRow
-        label="Prices"
-        information={
-          <ul>
-            {JSON.parse(prices).map(
-              (item: { price: number; people: number }) => {
-                return (
-                  <li
-                    key={item.people}
-                  >{`$${item.price} (${item.people} people)`}</li>
-                )
-              }
-            )}
-          </ul>
-        }
+        label="Price"
+        information={formatCurrency(route.priceInCents / 100)}
         style="inline-block"
       />
-
-      <div className="flex space-x-4">
-        <EditResourceButton
-          resource="route"
-          url={`/admin/routes/${id}/edit`}
-        />
-        <DeleteResourceButton
-          resource="route"
-          url={`/routes/${id}`}
-          backref="/admin/routes"
-        />
-      </div>
     </InformationContainer>
   )
 }
 
-type Props = {
+type RoutePageProps = {
   params: {
     id: string
   }
