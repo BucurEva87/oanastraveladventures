@@ -13,7 +13,7 @@ const RoutePage = async ({ params: { id } }: Props) => {
   if (!route) return notFound()
 
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: JSON.parse(route.prices)[0].price * 100,
+    amount: route.priceInCents,
     currency: "USD",
     metadata: { productId: route.id },
   })

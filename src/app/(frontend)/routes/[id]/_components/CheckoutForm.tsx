@@ -28,8 +28,6 @@ const stripePromise = loadStripe(
 )
 
 const CheckoutForm = ({ route, clientSecret }: Props) => {
-  const price = JSON.parse(route.prices)[0].price
-
   return (
     <div className="max-w-5xl w-full mx-auto space-y-8">
       <div className="flex gap-4 items-center">
@@ -37,7 +35,7 @@ const CheckoutForm = ({ route, clientSecret }: Props) => {
           <Image src={route.imagePath} fill alt={route.name} />
         </div> */}
         <div>
-          <div className="text-lg">{formatCurrency(price)}</div>
+          <div className="text-lg">{formatCurrency(route.priceInCents)}</div>
           <h1 className="text-2xl font-bold">{route.name}</h1>
           <div className="lime-clamp-3 text-muted-foreground">
             {route.description}
@@ -49,7 +47,7 @@ const CheckoutForm = ({ route, clientSecret }: Props) => {
         stripe={stripePromise}
       >
         <Form
-          price={price}
+          price={route.priceInCents}
           productId={route.id}
         />
       </Elements>
