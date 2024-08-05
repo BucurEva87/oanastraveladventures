@@ -3,7 +3,7 @@ import prisma from "@/prisma/client"
 import { notFound } from "next/navigation"
 import Stripe from "stripe"
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
+const stripe = new Stripe(process.env.STRIPE_SECRET_TEST_KEY as string)
 
 export default async function SuccessPage({
   searchParams: { payment_intent },

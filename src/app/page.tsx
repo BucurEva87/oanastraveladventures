@@ -1,6 +1,8 @@
 import prisma from "@/prisma/client"
 import Link from "next/link"
 
+export const dynamic = "force-dynamic"
+
 export default async function Home() {
   const routes = await prisma.route.findMany({
     where: { available: true },
