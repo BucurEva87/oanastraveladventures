@@ -56,7 +56,7 @@ const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     jwt: async ({ token, user, trigger, session }) => {
-      // console.log({
+      // console.log('authOptions -> callbacks:jwt:', {
       //   token,
       //   user,
       //   trigger,
@@ -68,7 +68,13 @@ const authOptions: NextAuthOptions = {
       return { ...token, ...user }
     },
     session: async ({ session, token }) => {
-      session.user = token.user!
+      session.user = {
+        name: token.name,
+        email: token.email,
+        image: token.picture
+      }
+
+      // console.log('authOptions -> callbacks:session:', session)
 
       return session
     }

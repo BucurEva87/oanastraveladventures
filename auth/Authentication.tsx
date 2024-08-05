@@ -18,7 +18,7 @@ import Link from "next/link"
 const Authentication = () => {
   const { data: session } = useSession()
 
-  console.log(session)
+  // console.log("Authentication:", session)
 
   return (
     <>

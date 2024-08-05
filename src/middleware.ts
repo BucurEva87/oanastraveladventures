@@ -14,7 +14,7 @@ export default withAuth(
     ]
     const accessManagingRights = ['ADMIN', 'MODERATOR']
 
-    // console.log(req.nextauth.token)
+    // console.log('Middleware -> nextauth.token:', req.nextauth.token)
 
     if (!rule) return
     if (!role || !accessManagingRights.includes(role))

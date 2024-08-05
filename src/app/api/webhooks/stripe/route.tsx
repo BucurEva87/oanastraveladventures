@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { Resend } from "resend"
 import Stripe from "stripe"
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
+const stripe = new Stripe(process.env.STRIPE_SECRET_TEST_KEY as string)
 const resend = new Resend(process.env.RESEND_KEY)
 
 export async function POST(request: NextRequest) {
@@ -65,11 +65,11 @@ export async function POST(request: NextRequest) {
       })
 
       try {
-        const data = await resend.emails.send({
-          // from: 'Hello <spokeswoman@oanastraveladventures.com>',
-          from: "onboarding@resend.dev",
+        await resend.emails.send({
+          from: "Spokeswoman <spokeswoman@oanastraveladventures.com>",
+          // from: "onboarding@resend.dev",
           to: email,
-          subject: `Purchase confirmation ${route.name}`,
+          subject: "Purchase confirmation ${route.name}",
           react: (
             <PurchaseConfirmationEmail
               customerName={user.name as string}
@@ -80,8 +80,6 @@ export async function POST(request: NextRequest) {
             />
           ),
         })
-
-        console.log("Data:", JSON.stringify(data))
       } catch (error: any) {
         console.log("Error:", JSON.stringify(error))
       }
@@ -89,8 +87,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ received: true })
   } catch (error: any) {
-    console.error("Error verifying Stripe webhook signature:", error.message)
-
     return NextResponse.json(`Webhook Error: ${error.message}`, { status: 400 })
   }
 }

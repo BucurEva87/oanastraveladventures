@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import Stripe from "stripe"
 import CheckoutForm from "./_components/CheckoutForm"
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_TEST_KEY as string)
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string)
 
 const RoutePage = async ({ params: { id } }: Props) => {
   const route = await prisma.route.findUnique({

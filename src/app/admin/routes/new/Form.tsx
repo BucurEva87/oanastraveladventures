@@ -171,9 +171,7 @@ const NewRoutePageForm = ({ locations }: Props) => {
             </FormGroupControl>
 
             <Input
-              {...register("length", {
-                valueAsNumber: true,
-              })}
+              {...register("length")}
               type="hidden"
             />
 

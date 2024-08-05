@@ -35,8 +35,9 @@ const PurchaseConfirmationEmail = ({
             href={`${process.env.NEXT_PUBLIC_BASE_URL}/routes/${productId}`}
             target="_blank"
           >
-            <span className="font-bold">{productName}</span>!
-          </Link>
+            <span className="font-bold">{productName}</span>
+          </Link>{" "}
+          !
         </Text>
         <Text className="text-lg text-deep-red mb-2">
           Your order was placed on{" "}
@@ -44,11 +45,6 @@ const PurchaseConfirmationEmail = ({
         </Text>
         <Text className="text-lg text-deep-red mb-2">
           Order ID: <span className="font-bold">{orderId}</span>
-        </Text>
-        <Text className="text-lg text-deep-red mt-4">
-          Best regards,
-          <br />
-          Oana&apos;s Travel Adventures
         </Text>
       </TemplateBody>
     </Tailwind>

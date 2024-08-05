@@ -127,10 +127,7 @@ const EditRoutePageForm = ({ route }: Props) => {
             </FormGroupControl>
 
             <Input
-              {...register("length", {
-                valueAsNumber: true,
-              })}
-              defaultValue={route.length}
+              {...register("length")}
               type="hidden"
             />
 

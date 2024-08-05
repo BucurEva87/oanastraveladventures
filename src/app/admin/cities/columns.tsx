@@ -63,6 +63,11 @@ export const columns: ColumnDef<City>[] = [
             <DropdownMenuItem asChild>
               <Link href={`/admin/cities/${row.original.id}/edit`}>Edit</Link>
             </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href={`/admin/cities/${row.original.id}/images`}>
+                Manage images
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DeleteDropdownItem
               id={row.original.id}

@@ -24,7 +24,7 @@ import Image from "next/image"
 import { FormEvent, useState } from "react"
 
 const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLIC_TEST_KEY as string
+  process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string
 )
 
 const CheckoutForm = ({ route, clientSecret }: Props) => {

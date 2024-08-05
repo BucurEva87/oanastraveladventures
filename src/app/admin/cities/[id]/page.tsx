@@ -53,10 +53,6 @@ const CityPage = async ({ params: { id } }: CityPageProps) => {
           />
         </div>
       )}
-      {/* <div className="flex space-x-4">
-        <Link href={`/admin/cities/${id}/image`}>Test images</Link>
-        <SendEmailButton />
-      </div> */}
     </InformationContainer>
   )
 }

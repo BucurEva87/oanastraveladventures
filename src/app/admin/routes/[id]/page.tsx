@@ -1,3 +1,4 @@
+import Info from "@/components/Info"
 import InformationContainer from "@/components/information/InformationContainer"
 import InformationRow from "@/components/information/InformationRow"
 import { formatCurrency } from "@/lib/formatters"
@@ -40,14 +41,21 @@ const RoutePage = async ({ params: { id } }: RoutePageProps) => {
 
   return (
     <InformationContainer>
-      <h1 className="text-3xl font-bold mb-4 text-center">
-        {route.name} ({route.available ? "Available" : "Unavailable"})
-      </h1>
-      {route.locations.map((item, index) => {
+      <h1 className="text-3xl font-bold mb-4 text-center">{route.name}</h1>
+      {(!route.circular
+        ? route.locations
+        : [...route.locations, route.locations[0]]
+      ).map((item, index) => {
         return (
           <InformationRow
             key={item.location.id}
-            label={!!index ? `Stop ${index}` : "Start"}
+            label={
+              index === 0
+                ? "Start"
+                : route.circular && index === route.locations.length
+                ? "Returning to"
+                : `Stop ${index}`
+            }
             information={
               <span>
                 <Link href={`/admin/locations/${item.location.id}`}>
@@ -66,13 +74,22 @@ const RoutePage = async ({ params: { id } }: RoutePageProps) => {
         )
       })}
 
-      <InformationRow
-        label="Length"
-        information={`${manageDistance(route.length, settings.metric)} ${
-          settings.metric
-        }`}
-        style="inline-block"
-      />
+      <div className="flex">
+        <InformationRow
+          label="Estimated length"
+          information={`${manageDistance(route.length, settings.metric)} ${
+            settings.metric
+          }`}
+          style="inline-block"
+        />
+        <Info
+          title="Take this with a grain of salt"
+          body="Please note that the distances calculated using the Haversine formula are straight-line
+                estimates between points. These estimates do not account for the actual travel path on the road, 
+                which may result in the actual distance being longer. Therefore, the distances provided might sometimes 
+                be underestimated."
+        />
+      </div>
 
       {!!route.description && (
         <InformationRow

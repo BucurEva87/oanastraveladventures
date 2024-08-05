@@ -72,6 +72,11 @@ export const columns: ColumnDef<RouteWithLocations>[] = [
             <DropdownMenuItem asChild>
               <Link href={`/admin/routes/${row.original.id}/edit`}>Edit</Link>
             </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href={`/admin/routes/${row.original.id}/images`}>
+                Manage images
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DeleteDropdownItem
               id={row.original.id}

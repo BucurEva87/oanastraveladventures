@@ -7,8 +7,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
-import { ChartData } from "../../../../data/chart"
 import { useTheme } from "next-themes"
+import { ChartData } from "../ordersMethods"
 
 export default function BarChart({ data }: { data: ChartData }) {
   const { theme } = useTheme()

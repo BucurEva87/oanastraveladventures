@@ -1,31 +1,39 @@
 import Image from "next/image"
+import logo from "../../../../public/logo.png"
 
-export default function SalesCard(props: SalesCardProps) {
+export default function SalesCard({
+  name,
+  email,
+  image,
+  amount,
+}: SalesCardProps) {
   return (
-    <div className="  flex flex-wrap justify-between gap-3 ">
+    <div className="flex flex-wrap justify-between gap-3">
       <section className="flex justify-between gap-3 ">
         <div className=" h-12 w-12 rounded-full bg-gray-100 p-1">
           <Image
             width={200}
             height={200}
-            src={`https://api.dicebear.com/7.x/lorelei/svg?seed=${props.name}`}
+            src={image ? image : logo.src}
             alt="avatar"
+            className="rounded-full"
           />
         </div>
         <div className="text-sm">
-          <p>{props.name}</p>
+          <p>{name}</p>
           <div className="text-ellipsis overflow-hidden whitespace-nowrap w-[120px]  sm:w-auto  text-gray-400">
-            {props.email}
+            {email}
           </div>
         </div>
       </section>
-      <p>{props.amount}</p>
+      <p>{amount}</p>
     </div>
   )
 }
 
-export type SalesCardProps = {
+type SalesCardProps = {
   name: string
   email: string
+  image?: string
   amount: string
 }
