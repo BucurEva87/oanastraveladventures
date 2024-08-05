@@ -10,5 +10,12 @@ export async function POST(request: Request) {
     process.env.CLOUDINARY_API_SECRET as string
   )
 
+  // TODO: Remove this
+  console.log({
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    paramsToSign,
+    signature
+  })
+
   return Response.json({ signature })
 }
