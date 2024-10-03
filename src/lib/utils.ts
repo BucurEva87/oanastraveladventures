@@ -123,3 +123,7 @@ export const capitalize = (string: string) => {
 export const manageDistance = (distance: number, metric: string) => {
 	return metric === 'km' ? distance.toFixed(2) : (distance * 0.621371).toFixed(2)
 }
+
+export const getImagePublicId = (images: string[]): string[] => {
+	return images.map(src => src.split('/').at(-1)!.split('.')[0])
+}

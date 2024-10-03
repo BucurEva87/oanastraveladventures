@@ -17,7 +17,7 @@ export const deleteImages = async (images: string[]) => {
 
   if (!images.length) return
 
-  const result = await cloudinary.api.delete_resources(images)
+  await cloudinary.api.delete_resources(images, { type: 'authenticated', invalidate: true })
 }
 
 export default cloudinary

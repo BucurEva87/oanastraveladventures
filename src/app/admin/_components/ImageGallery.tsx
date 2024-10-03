@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import styled from "styled-components"
-import { cn } from "@/lib/utils"
+import { cn, getImagePublicId } from "@/lib/utils"
 
 const ImageGallery = ({ images, deleteImagesFn }: ImageGalleryProps) => {
   const [uploadedImages, setUploadedImages] = useState<string[]>(images)
@@ -16,9 +16,7 @@ const ImageGallery = ({ images, deleteImagesFn }: ImageGalleryProps) => {
   }
 
   const handleDeleteImages = async () => {
-    await deleteImagesFn(
-      selectedImages.map((src) => src.split("/").at(-1)!.split(".")[0])
-    )
+    await deleteImagesFn(getImagePublicId(selectedImages))
 
     setUploadedImages((prev) =>
       prev.filter((image) => !selectedImages.includes(image))
